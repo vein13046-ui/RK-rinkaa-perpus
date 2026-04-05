@@ -18,8 +18,16 @@ Route::middleware('guest')->group(function () {
 // Protected - login/register locked
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
+    Route::get('/dashboard/user', [AuthController::class, 'userDashboard'])->name('dashboard.user');
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile/photo', [AuthController::class, 'updateProfilePhoto'])->name('profile.update');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
+
+// Admin routes - simple auth check (add role=='admin' in controller if needed)
+Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
+    Route::get('/books', [\App\Http\Controllers\BookController::class, 'index'])->name('books.index');
+    Route::get('/books/create', [\App\Http\Controllers\BookController::class, 'create'])->name('books.create');
+    Route::post('/books', [\App\Http\Controllers\BookController::class, 'store'])->name('books.store');
 });

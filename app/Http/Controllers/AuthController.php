@@ -71,17 +71,22 @@ class AuthController extends Controller
 
 
 
-    // Dashboard
+    // Dashboard - role based
     public function dashboard()
     {
-        return view('dashboard');
+        $user = Auth::user();
+        if (($user->role ?? 'user') === 'admin') {
+            return view('dashboard');
+        }
+        return $this->userDashboard();
     }
 
         // User Dashboard
-        public function userDashboard()
-        {
-            return view('dashboard_user');
-        }
+public function userDashboard()
+    {
+        $books = \App\Models\Book::all();
+        return view('dashboard_user', compact('books'));
+    }
 
     /**
      * Show user profile

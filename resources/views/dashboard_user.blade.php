@@ -45,11 +45,11 @@
 
             <nav class="flex-1 mt-4">
                 <p class="px-6 text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Menu Pengguna</p>
-<a href="#" data-tab="dashboard" class="flex items-center px-6 py-3 mb-1 active-menu transition-all">
+<a href="{{ route('dashboard') }}" class="flex items-center px-6 py-3 mb-1 active-menu transition-all">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     <span class="font-medium">Dashboard</span>
                 </a>
-<a href="#" data-tab="daftar-buku" class="flex items-center px-6 py-3 mb-1 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all">
+<a href="{{ route('user.books') }}" class="flex items-center px-6 py-3 mb-1 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     <span>Daftar Buku</span>
                 </a>
@@ -138,50 +138,7 @@
                 <div class="max-w-6xl mx-auto">
                     <!-- Tab: Dashboard -->
                     <div id="tab-dashboard" class="tab-pane active">
-                    <!-- Tab: Daftar Buku -->
-                    <div id="tab-daftar-buku" class="tab-pane">
-                        <div class="bg-white rounded-3xl shadow-2xl border border-slate-200 p-8 mb-8">
-                            <div class="flex items-center justify-between mb-8">
-                                <div>
-                                    <h2 class="text-2xl font-bold text-slate-800 mb-2">Daftar Buku Tersedia</h2>
-                                    <p class="text-slate-600">Jelajahi koleksi buku perpustakaan kami</p>
-                                </div>
-                            </div>
 
-                            @forelse ($books as $book)
-                                <div class="group bg-gradient-to-br from-indigo-50 to-blue-50 p-6 rounded-2xl border border-indigo-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 mb-6">
-                                    <div class="flex gap-6">
-                                        <div class="w-24 h-32 bg-gradient-to-br from-indigo-100 to-blue-100 rounded-xl flex items-center justify-center shadow-lg group-hover:shadow-2xl transition-all">
-                                            <svg class="w-12 h-12 text-indigo-500 opacity-75" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                            </svg>
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <h3 class="text-xl font-bold text-slate-800 mb-1 line-clamp-2 group-hover:text-indigo-700 transition-colors">{{ $book->judul }}</h3>
-                                            <p class="text-slate-600 font-medium mb-1">{{ $book->penulis }}</p>
-                                            <p class="text-sm text-slate-500 mb-3">{{ $book->penerbit }} • {{ $book->tahun_terbit }}</p>
-                                            <div class="flex items-center gap-4 text-sm">
-                                                <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 text-green-800 rounded-full font-medium">
-                                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"></path></svg>
-                                                    Stok: {{ $book->stok }}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="text-center py-20">
-                                    <div class="w-24 h-24 bg-slate-100 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                                        <svg class="w-12 h-12 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                        </svg>
-                                    </div>
-                                    <h3 class="text-2xl font-bold text-slate-800 mb-3">Mohon Maaf</h3>
-                                    <p class="text-xl font-semibold text-slate-500 mb-8">Buku belum ditambahkan</p>
-                                    <p class="text-slate-600 max-w-md mx-auto">Koleksi buku akan segera tersedia. Silakan cek kembali nanti atau hubungi admin perpustakaan.</p>
-                                </div>
-                            @endforelse
-                        </div>
 
                     <!-- Tab: Peminjaman Saya -->
                     <div id="tab-peminjaman" class="tab-pane">

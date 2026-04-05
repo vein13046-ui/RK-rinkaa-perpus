@@ -82,9 +82,9 @@ class AuthController extends Controller
     }
 
         // User Dashboard
-public function userDashboard()
+    public function userDashboard()
     {
-        $books = \App\Models\Book::all();
+        $books = \App\Models\Book::latest()->paginate(12);
         return view('dashboard_user', compact('books'));
     }
 

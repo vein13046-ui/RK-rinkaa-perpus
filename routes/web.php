@@ -20,6 +20,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
     Route::get('/dashboard/user', [AuthController::class, 'userDashboard'])->name('dashboard.user');
 
+    Route::get('/daftar-buku', [\App\Http\Controllers\BookController::class, 'indexUser'])->name('user.books');
+
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
     Route::post('/profile/photo', [AuthController::class, 'updateProfilePhoto'])->name('profile.update');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

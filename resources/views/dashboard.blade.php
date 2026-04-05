@@ -44,14 +44,13 @@
 
             <nav class="flex-1 mt-4">
                 <p class="px-6 text-xs font-semibold text-slate-400 uppercase tracking-widest mb-4">Main Menu</p>
-                <a href="#" class="flex items-center px-6 py-3 mb-1 active-menu transition-all">
+                <a href="{{ route('dashboard') }}" class="flex items-center px-6 py-3 mb-1 active-menu transition-all">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
                     <span class="font-medium">Dashboard</span>
                 </a>
-                <a href="{{ route('admin.books.index') }}" class="flex items-center px-6 py-3 mb-1 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all">
+                <a href="{{ route('admin.books.index') }}" class="{{ request()->routeIs('admin.books.index') ? 'active-menu bg-blue-50 border-r-4 border-blue-600 text-blue-600' : 'text-slate-500 hover:bg-slate-50 hover:text-blue-600' }} flex items-center px-6 py-3 mb-1 transition-all">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                     <span>Data Buku</span>
-                </a>
                 </a>
                 <a href="{{ route('admin.books.create') }}" class="flex items-center px-6 py-3 mb-1 text-slate-500 hover:bg-slate-50 hover:text-blue-600 transition-all">
                     <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
@@ -88,7 +87,7 @@
             
             <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 shrink-0">
                 <div class="flex items-center">
-                    <h1 class="text-xl font-semibold text-slate-800">Dashboard Utama</h1>
+                    <h1 class="text-xl font-semibold text-slate-800">@yield('page-title', 'Dashboard Utama')</h1>
                 </div>
                 <div class="flex items-center gap-4">
                     <button class="p-2 text-slate-400 hover:text-blue-600 relative">

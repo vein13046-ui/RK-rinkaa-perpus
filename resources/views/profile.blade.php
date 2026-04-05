@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Pengguna - Sistem Perpustakaan</title>
+<title>Profil Pengguna - RinKa Perpus</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -25,8 +25,8 @@
         <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col">
             <div class="p-6">
                 <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">L</div>
-                    <span class="text-xl font-bold tracking-tight text-slate-800">LibEdu <span class="text-blue-600">Pro</span></span>
+<div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold text-xl">RK</div>
+<span class="text-xl font-bold tracking-tight text-slate-800">RinKa <span class="text-blue-600">Perpus</span></span>
                 </div>
             </div>
             <nav class="flex-1 mt-4 px-6">

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LibEdu Pro - Login</title>
+<title>RinKa Perpus - Masuk</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -32,11 +32,11 @@
         </div>
 
         <div class="text-center mb-8">
-            <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 shadow-lg shadow-blue-100">
-                L
+                <div class="w-16 h-16 bg-blue-600 rounded-2xl flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 shadow-lg shadow-blue-100">
+                RK
             </div>
-            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">LibEdu <span class="text-blue-600">Pro</span></h1>
-            <p class="text-slate-500 text-sm mt-2">Silahkan login ke akun petugas Anda</p>
+            <h1 class="text-2xl font-bold text-slate-800 tracking-tight">RinKa <span class="text-blue-600">Perpus</span></h1>
+            <p class="text-slate-500 text-sm mt-2">Silahkan login </p>
         </div>
 
         @if ($errors->any())

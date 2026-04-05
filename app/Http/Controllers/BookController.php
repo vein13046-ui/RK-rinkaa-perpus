@@ -47,4 +47,11 @@ class BookController extends Controller
 
         return redirect()->route('admin.books.index')->with('success', 'Buku berhasil ditambahkan!');
     }
+
+    public function indexUser()
+    {
+        $books = Book::latest()->paginate(12);
+        return view('book_user.daftar_buku_user', compact('books'));
+    }
 }
+

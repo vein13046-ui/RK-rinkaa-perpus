@@ -5,7 +5,7 @@ use App\Http\Controllers\BorrowController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return auth()->check() ? redirect()->route('dashboard') : view('auth.login');
+    return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
 
 // Guest only - redirect logged users to dashboard

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Book;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 
@@ -14,7 +15,7 @@ class AuthController extends Controller
     // Tampilkan Form Login
     public function showLogin()
     {
-        return view('auth.login');
+        return view('auth.login_clean');
     }
 
     // Proses Login
@@ -45,7 +46,7 @@ class AuthController extends Controller
     // Tampilkan Form Register
     public function showRegister()
     {
-        return view('auth.register');
+        return view('auth.register_clean');
     }
 
     // Proses Register
@@ -75,8 +76,17 @@ class AuthController extends Controller
     public function dashboard()
     {
         $user = Auth::user();
+        $stats = [
+            'bookCount' => Book::count(),
+            'stockCount' => Book::sum('stok'),
+            'availableCount' => Book::where('stok', '>', 0)->count(),
+            'memberCount' => User::where('role', 'user')->count(),
+        ];
+
+        $recentBooks = Book::latest()->take(5)->get();
+
         if (($user->role ?? 'user') === 'admin') {
-            return view('dashboard');
+            return view('dashboard', compact('stats', 'recentBooks'));
         }
         return $this->userDashboard();
     }
@@ -84,8 +94,15 @@ class AuthController extends Controller
         // User Dashboard
     public function userDashboard()
     {
-        $books = \App\Models\Book::latest()->paginate(12);
-        return view('dashboard_user', compact('books'));
+        $featuredBooks = Book::latest()->take(6)->get();
+        $stats = [
+            'bookCount' => Book::count(),
+            'stockCount' => Book::sum('stok'),
+            'availableCount' => Book::where('stok', '>', 0)->count(),
+            'categoryCount' => Book::distinct('kategori')->count('kategori'),
+        ];
+
+        return view('dashboard_user_clean', compact('featuredBooks', 'stats'));
     }
 
     /**
@@ -102,23 +119,55 @@ class AuthController extends Controller
      */
     public function updateProfilePhoto(Request $request)
     {
-        $request->validate([
-            'profile_photo' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ]);
-
         $user = Auth::user();
 
-        // Delete old photo if exists
-        if ($user->profile_photo) {
-            Storage::disk('public')->delete($user->profile_photo);
+        if (($user->role ?? 'user') === 'admin') {
+            return back()
+                ->withErrors(['profile_photo' => 'Foto profil admin dikunci dan tidak dapat diganti.']);
         }
 
-        // Store new photo
-        $path = $request->file('profile_photo')->store('avatars', 'public');
-        
-        $user->update(['profile_photo' => $path]);
-        
-        return back()->with('success', 'Foto profil berhasil diupdate!');
+        $request->validate([
+            'profile_photo' => 'required|file|max:102400',
+        ]);
+
+        $file = $request->file('profile_photo');
+
+        if (! $file || ! $file->isValid()) {
+            return back()
+                ->withErrors(['profile_photo' => 'Upload gagal. Coba file yang lebih kecil atau periksa batas upload server.'])
+                ->withInput();
+        }
+
+        $extension = strtolower((string) $file->getClientOriginalExtension());
+        $mimeType = strtolower((string) $file->getMimeType());
+
+        if ($extension === 'mp4' || $mimeType === 'video/mp4') {
+            return back()
+                ->withErrors(['profile_photo' => 'File MP4 tidak diperbolehkan.'])
+                ->withInput();
+        }
+
+        try {
+            // Store new photo first so the existing profile stays intact if anything fails
+            $path = $file->store('avatars', 'public');
+
+            if ($user->profile_photo) {
+                Storage::disk('public')->delete($user->profile_photo);
+            }
+
+            $user->update(['profile_photo' => $path]);
+
+            return back()->with('success', 'Foto profil berhasil diupdate!');
+        } catch (\Throwable $e) {
+            Log::error('Profile photo upload failed', [
+                'user_id' => $user->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()
+                ->withErrors(['profile_photo' => 'Upload gagal saat menyimpan file.'])
+                ->withInput();
+        }
     }
 
     // Logout

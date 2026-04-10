@@ -11,12 +11,12 @@ class BookController extends Controller
     public function index()
     {
         $books = Book::latest()->paginate(15);
-        return view('books_admin.data_buku', compact('books'));
+        return view('books_admin.data_buku_clean', compact('books'));
     }
 
     public function create()
     {
-        return view('books_admin.tambah_buku');
+        return view('books_admin.tambah_buku_clean');
     }
 
     public function store(Request $request)
@@ -51,7 +51,6 @@ class BookController extends Controller
     public function indexUser()
     {
         $books = Book::latest()->paginate(12);
-        return view('book_user.daftar_buku_user', compact('books'));
+        return view('book_user.daftar_buku_user_clean', compact('books'));
     }
 }
-

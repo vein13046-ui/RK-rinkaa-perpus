@@ -56,8 +56,11 @@ class User extends Authenticatable
         if ($this->profile_photo) {
             return asset('storage/' . $this->profile_photo);
         }
-        
-// Default JPG avatar (user-provided)
-        return asset('storage/default_avatar/devault avatar.jpg');
+
+        if (($this->role ?? 'user') === 'admin') {
+            return asset('storage/avatars/rinn.jpg');
+        }
+
+        return asset('default-avatar.svg');
     }
 }

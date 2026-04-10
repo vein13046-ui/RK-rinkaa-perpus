@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RinKa Perpus - @yield('page-title', 'Dashboard')</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            color-scheme: light;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.12), transparent 32%),
+                radial-gradient(circle at top right, rgba(16, 185, 129, 0.10), transparent 28%),
+                linear-gradient(180deg, #f8fafc 0%, #eef4ff 100%);
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e2e8f0;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body class="text-slate-700 antialiased min-h-screen">
+    @php
+        $user = Auth::user();
+        $isAdmin = ($user->role ?? 'user') === 'admin';
+        $activeDashboard = request()->routeIs('dashboard');
+        $activeBooks = request()->routeIs('admin.books.*');
+        $activeUserBooks = request()->routeIs('user.books');
+        $activeProfile = request()->routeIs('profile');
+    @endphp
+
+    <div class="min-h-screen flex">
+        <aside class="hidden lg:flex w-80 flex-col border-r border-slate-200/80 bg-white/85 backdrop-blur-xl shadow-[12px_0_40px_rgba(15,23,42,0.04)]">
+            <div class="px-8 py-7 border-b border-slate-100">
+                <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-blue-200">
+                        RK
+                    </div>
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.24em] text-slate-400 font-semibold">Library Suite</p>
+                        <h1 class="text-xl font-extrabold text-slate-900 leading-tight">RinKa <span class="text-blue-600">Perpus</span></h1>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="flex-1 px-5 py-6 space-y-2">
+                <p class="px-3 mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Menu Utama</p>
+
+                <a href="{{ route('dashboard') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeDashboard ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeDashboard ? 'bg-white/15' : 'bg-blue-50' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                    </span>
+                    <span class="font-semibold">Dashboard</span>
+                </a>
+
+                @if ($isAdmin)
+                    <a href="{{ route('admin.books.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeBooks ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBooks ? 'bg-white/15' : 'bg-blue-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Data Buku</span>
+                    </a>
+                    <a href="{{ route('admin.books.create') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('admin.books.create') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ request()->routeIs('admin.books.create') ? 'bg-white/15' : 'bg-emerald-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Tambah Buku</span>
+                    </a>
+                @else
+                    <a href="{{ route('user.books') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeUserBooks ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeUserBooks ? 'bg-white/15' : 'bg-blue-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Daftar Buku</span>
+                    </a>
+                @endif
+
+                <a href="{{ route('profile') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeProfile ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeProfile ? 'bg-white/15' : 'bg-slate-50' }}">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </span>
+                    <span class="font-semibold">Profil</span>
+                </a>
+            </nav>
+
+            <div class="px-5 pb-6">
+                <div class="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-2xl overflow-hidden ring-2 ring-white shadow-md">
+                            <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-bold text-slate-900 truncate">{{ $user->name }}</p>
+                            <p class="text-xs text-slate-500 capitalize">{{ $user->role }}</p>
+                        </div>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                        @csrf
+                        <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                            </svg>
+                            Keluar
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
+
+        <div class="flex-1 min-w-0">
+            <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/75 backdrop-blur-xl">
+                <div class="px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
+                    <div class="min-w-0">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-slate-400">RinKa Perpus</p>
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">@yield('page-title', 'Dashboard')</h2>
+                        @hasSection('page-description')
+                            <p class="text-sm text-slate-500 mt-1">@yield('page-description')</p>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center gap-3">
+                        <div class="hidden sm:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
+                            <span class="text-sm font-medium text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</span>
+                        </div>
+
+                        <div class="relative">
+                            <button id="notifBtn" type="button" class="relative inline-flex items-center justify-center h-12 w-12 rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-blue-200 hover:shadow-md" aria-label="Notifikasi">
+                                <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                                <span class="absolute top-2.5 right-2.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
+                            </button>
+
+                            <div id="notifDropdown" class="absolute right-0 mt-3 w-80 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
+                                <div class="px-4 py-4 border-b border-slate-100">
+                                    <p class="text-sm font-bold text-slate-900">Notifikasi</p>
+                                    <p class="text-xs text-slate-500 mt-1">Pembaruan terbaru untuk akunmu</p>
+                                </div>
+                                <div class="space-y-1 py-2">
+                                    <div class="rounded-2xl px-4 py-3 hover:bg-slate-50 transition">
+                                        <p class="text-sm font-semibold text-slate-900">Katalog buku siap dibuka</p>
+                                        <p class="text-xs text-slate-500 mt-1">Lihat koleksi terbaru yang tersedia di perpustakaan.</p>
+                                    </div>
+                                    <div class="rounded-2xl px-4 py-3 hover:bg-slate-50 transition">
+                                        <p class="text-sm font-semibold text-slate-900">Profil akun sudah rapi</p>
+                                        <p class="text-xs text-slate-500 mt-1">Informasi akun dan foto profil sekarang lebih mudah dilihat.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <button id="profileBtn" class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm transition hover:border-blue-200 hover:shadow-md">
+                                <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-xl object-cover">
+                                <div class="hidden md:block text-left">
+                                    <p class="text-sm font-semibold text-slate-900 leading-tight">{{ $user->name }}</p>
+                                    <p class="text-xs text-slate-500 capitalize">{{ $user->role }}</p>
+                                </div>
+                            </button>
+
+                            <div id="profileDropdown" class="absolute right-0 mt-3 w-72 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
+                                <div class="px-4 py-4 border-b border-slate-100">
+                                    <div class="flex items-center gap-3">
+                                        <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="w-12 h-12 rounded-2xl object-cover shadow-sm">
+                                        <div class="min-w-0">
+                                            <p class="font-bold text-slate-900 truncate">{{ $user->name }}</p>
+                                            <p class="text-sm text-slate-500 truncate">{{ $user->email }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="{{ route('profile') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                    Buka Profil
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-slate-100">
+                                    @csrf
+                                    <button type="submit" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-rose-50 hover:text-rose-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                        </svg>
+                                        Keluar
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+                @yield('content')
+            </main>
+        </div>
+    </div>
+
+    <script>
+        const notifBtn = document.getElementById('notifBtn');
+        const notifDropdown = document.getElementById('notifDropdown');
+        const profileBtn = document.getElementById('profileBtn');
+        const dropdown = document.getElementById('profileDropdown');
+
+        if (notifBtn && notifDropdown) {
+            notifBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                notifDropdown.classList.toggle('opacity-100');
+                notifDropdown.classList.toggle('invisible');
+                notifDropdown.classList.toggle('scale-100');
+                notifDropdown.classList.toggle('opacity-0');
+                notifDropdown.classList.toggle('scale-95');
+            });
+        }
+
+        if (profileBtn && dropdown) {
+            profileBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                dropdown.classList.toggle('opacity-100');
+                dropdown.classList.toggle('invisible');
+                dropdown.classList.toggle('scale-100');
+                dropdown.classList.toggle('opacity-0');
+                dropdown.classList.toggle('scale-95');
+            });
+
+            document.addEventListener('click', function () {
+                if (notifDropdown) {
+                    notifDropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                    notifDropdown.classList.remove('opacity-100', 'scale-100');
+                }
+                dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                dropdown.classList.remove('opacity-100', 'scale-100');
+            });
+        }
+    </script>
+    @stack('scripts')
+</body>
+</html>

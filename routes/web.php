@@ -27,8 +27,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
-// Admin routes - simple auth check (add role=='admin' in controller if needed)
-Route::middleware('auth')->name('admin.')->prefix('admin')->group(function () {
+// Admin routes - requires admin role
+Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(function () {
     Route::get('/books', [\App\Http\Controllers\BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [\App\Http\Controllers\BookController::class, 'create'])->name('books.create');
     Route::post('/books', [\App\Http\Controllers\BookController::class, 'store'])->name('books.store');

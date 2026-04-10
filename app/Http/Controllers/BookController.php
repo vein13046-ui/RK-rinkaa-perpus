@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BorrowRequest;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Book;
@@ -12,6 +14,27 @@ class BookController extends Controller
     {
         $books = Book::latest()->paginate(15);
         return view('books_admin.data_buku_clean', compact('books'));
+    }
+
+    public function destroy(Book $book)
+    {
+        $hasActiveBorrow = BorrowRequest::where('book_id', $book->id)
+            ->whereIn('status', ['pending', 'approved', 'picked_up', 'return_pending'])
+            ->exists();
+
+        if ($hasActiveBorrow) {
+            return back()->withErrors([
+                'delete_book' => 'Buku tidak bisa dihapus karena masih punya peminjaman aktif.',
+            ]);
+        }
+
+        if ($book->cover) {
+            Storage::disk('public')->delete($book->cover);
+        }
+
+        $book->delete();
+
+        return back()->with('success', 'Buku berhasil dihapus.');
     }
 
     public function create()
@@ -51,6 +74,12 @@ class BookController extends Controller
     public function indexUser()
     {
         $books = Book::latest()->paginate(12);
-        return view('book_user.daftar_buku_user_clean', compact('books'));
+        $activeBorrowMap = BorrowRequest::where('user_id', Auth::id())
+            ->whereIn('status', ['pending', 'approved', 'picked_up', 'return_pending'])
+            ->latest()
+            ->get()
+            ->keyBy('book_id');
+
+        return view('book_user.daftar_buku_user_borrow_clean', compact('books', 'activeBorrowMap'));
     }
 }

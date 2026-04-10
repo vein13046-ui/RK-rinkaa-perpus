@@ -36,7 +36,10 @@
         $activeDashboard = request()->routeIs('dashboard');
         $activeBooks = request()->routeIs('admin.books.*');
         $activeUserBooks = request()->routeIs('user.books');
+        $activeBorrowStatus = request()->routeIs('borrow.user.index') || request()->routeIs('admin.borrow.*');
         $activeProfile = request()->routeIs('profile');
+        $borrowNotificationCount = $borrowNotificationCount ?? 0;
+        $borrowNotifications = $borrowNotifications ?? collect();
     @endphp
 
     <div class="min-h-screen flex">
@@ -90,6 +93,32 @@
                             </svg>
                         </span>
                         <span class="font-semibold">Daftar Buku</span>
+                    </a>
+                @endif
+
+                @if ($isAdmin)
+                    <a href="{{ route('admin.borrow.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeBorrowStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBorrowStatus ? 'bg-white/15' : 'bg-amber-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Status Peminjaman</span>
+                        @if ($borrowNotificationCount > 0)
+                            <span class="ml-auto inline-flex items-center rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-bold text-rose-600">{{ number_format($borrowNotificationCount) }}</span>
+                        @endif
+                    </a>
+                @else
+                    <a href="{{ route('borrow.user.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeBorrowStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBorrowStatus ? 'bg-white/15' : 'bg-amber-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Status Peminjaman</span>
+                        @if ($borrowNotificationCount > 0)
+                            <span class="ml-auto inline-flex items-center rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-bold text-rose-600">{{ number_format($borrowNotificationCount) }}</span>
+                        @endif
                     </a>
                 @endif
 
@@ -149,23 +178,43 @@
                                 <svg class="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
                                 </svg>
-                                <span class="absolute top-2.5 right-2.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
+                                @if ($borrowNotificationCount > 0)
+                                    <span class="absolute top-2.5 right-2.5 h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
+                                @endif
                             </button>
 
                             <div id="notifDropdown" class="absolute right-0 mt-3 w-80 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
                                 <div class="px-4 py-4 border-b border-slate-100">
                                     <p class="text-sm font-bold text-slate-900">Notifikasi</p>
-                                    <p class="text-xs text-slate-500 mt-1">Pembaruan terbaru untuk akunmu</p>
+                                    <p class="text-xs text-slate-500 mt-1">{{ $isAdmin ? 'Permintaan peminjaman yang menunggu konfirmasi' : 'Status peminjaman terbaru dari akunmu' }}</p>
                                 </div>
-                                <div class="space-y-1 py-2">
-                                    <div class="rounded-2xl px-4 py-3 hover:bg-slate-50 transition">
-                                        <p class="text-sm font-semibold text-slate-900">Katalog buku siap dibuka</p>
-                                        <p class="text-xs text-slate-500 mt-1">Lihat koleksi terbaru yang tersedia di perpustakaan.</p>
-                                    </div>
-                                    <div class="rounded-2xl px-4 py-3 hover:bg-slate-50 transition">
-                                        <p class="text-sm font-semibold text-slate-900">Profil akun sudah rapi</p>
-                                        <p class="text-xs text-slate-500 mt-1">Informasi akun dan foto profil sekarang lebih mudah dilihat.</p>
-                                    </div>
+                                <div class="space-y-1 py-2 max-h-80 overflow-y-auto">
+                                    @forelse ($borrowNotifications as $notification)
+                                        <div class="rounded-2xl px-4 py-3 hover:bg-slate-50 transition">
+                                            @if ($isAdmin)
+                                                <p class="text-sm font-semibold text-slate-900">{{ $notification->borrower_name }}</p>
+                                                <p class="text-xs text-slate-500 mt-1">{{ $notification->book->judul ?? 'Buku' }} - {{ $notification->borrow_days }} hari</p>
+                                                <p class="text-xs text-amber-600 mt-1">{{ $notification->status === 'return_pending' ? 'Menunggu persetujuan pengembalian' : 'Menunggu konfirmasi peminjaman' }}</p>
+                                            @else
+                                                <p class="text-sm font-semibold text-slate-900">{{ $notification->book->judul ?? 'Buku' }}</p>
+                                                <p class="text-xs text-slate-500 mt-1">Status: <span class="font-semibold capitalize text-slate-700">{{ $notification->status_label }}</span></p>
+                                                @if ($notification->status === 'approved' && $notification->pickup_deadline)
+                                                    <p class="text-xs text-amber-600 mt-1">Segera ambil dalam 8 jam</p>
+                                                @elseif ($notification->status === 'return_pending')
+                                                    <p class="text-xs text-violet-600 mt-1">Menunggu admin menyetujui pengembalian</p>
+                                                @endif
+                                            @endif
+                                        </div>
+                                    @empty
+                                        <div class="rounded-2xl px-4 py-8 text-center text-sm text-slate-500">
+                                            {{ $isAdmin ? 'Belum ada permintaan pinjam baru.' : 'Belum ada status peminjaman.' }}
+                                        </div>
+                                    @endforelse
+                                </div>
+                                <div class="p-2 border-t border-slate-100">
+                                    <a href="{{ $isAdmin ? route('admin.borrow.index') : route('borrow.user.index') }}" class="flex items-center justify-center rounded-2xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                                        Buka Halaman Status
+                                    </a>
                                 </div>
                             </div>
                         </div>

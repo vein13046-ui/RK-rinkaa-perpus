@@ -11,6 +11,12 @@
             </div>
         @endif
 
+        @if ($errors->has('delete_book'))
+            <div class="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-rose-800">
+                {{ $errors->first('delete_book') }}
+            </div>
+        @endif
+
         <div class="rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/60 p-6 sm:p-8">
             <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-5 mb-8">
                 <div>
@@ -36,6 +42,7 @@
                             <th class="px-5 py-4 text-center">Tahun</th>
                             <th class="px-5 py-4 text-center">Stok</th>
                             <th class="px-5 py-4 text-center">Status</th>
+                            <th class="px-5 py-4 text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-100 bg-white">
@@ -84,10 +91,20 @@
                                         {{ $book->stok > 0 ? 'Tersedia' : 'Habis' }}
                                     </span>
                                 </td>
+
+                                <td class="px-5 py-5 text-center align-top">
+                                    <form action="{{ route('admin.books.destroy', $book) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus buku ini?')">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="inline-flex items-center gap-2 rounded-2xl border border-rose-200 bg-white px-4 py-2 text-sm font-semibold text-rose-600 transition hover:bg-rose-50">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="px-5 py-16 text-center text-slate-500">
+                                <td colspan="6" class="px-5 py-16 text-center text-slate-500">
                                     Belum ada buku di katalog.
                                 </td>
                             </tr>

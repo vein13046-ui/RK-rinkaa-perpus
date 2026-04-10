@@ -3,86 +3,25 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?php echo e(config('app.name', 'Laravel')); ?> - <?php echo $__env->yieldContent('title', 'ECORP'); ?></title>
-    
-    
+    <title><?php echo e(config('app.name', 'RinKa Perpus')); ?> - <?php echo $__env->yieldContent('title', 'Masuk'); ?></title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="<?php echo e(asset('css/app.css')); ?>" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Custom font-faces inline for immediate use */
-@font-face {
-            font-family: 'OpenSans';
-            src: url('<?php echo e(asset('fonts/OpenSans-Regular.ttf')); ?>') format('truetype');
-            font-weight: 400;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'OpenSans';
-            src: url('<?php echo e(asset('fonts/OpenSans-Bold.ttf')); ?>') format('truetype');
-            font-weight: 700;
-            font-display: swap;
-        }
-        .font-opensans { font-family: 'OpenSans', sans-serif !important; }
-        .title-hero { 
-            background: linear-gradient(to right, #f97316, #fb923c); 
-            -webkit-background-clip: text; 
-            background-clip: text; 
-            color: transparent; 
-            font-weight: bold;
-            font-size: 2.5rem;
-            text-align: center;
-        }
-        .auth-page {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #553c9a 0%, #4c4198 50%, #3a3778 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1rem;
-        }
-        .auth-card {
-            width: 100%;
-            max-width: 28rem;
-            padding: 2.5rem;
-            background: rgba(255,255,255,0.1);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255,255,255,0.2);
-            border-radius: 1.5rem;
-            box-shadow: 0 25px 45px rgba(0,0,0,0.1);
-        }
-        .input-field {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            background: rgba(255,255,255,0.2);
-            border: 1px solid rgba(255,255,255,0.3);
-            border-radius: 1rem;
-            color: white;
-            placeholder-color: rgba(255,255,255,0.7);
-        }
-        .input-field:focus {
-            outline: none;
-            ring: 2px solid #f97316;
-            background: rgba(255,255,255,0.3);
-        }
-        .btn-primary {
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(to right, #f97316, #fb923c);
-            border-radius: 1rem;
-            color: white;
-            font-weight: bold;
-            font-size: 1.125rem;
-            border: none;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(249,115,22,0.4);
+        body {
+            font-family: 'Inter', sans-serif;
+            background:
+                radial-gradient(circle at top left, rgba(37, 99, 235, 0.22), transparent 28%),
+                radial-gradient(circle at bottom right, rgba(15, 23, 42, 0.86), transparent 34%),
+                linear-gradient(180deg, #0f172a 0%, #172554 55%, #e2e8f0 100%);
         }
     </style>
 </head>
-<body class="font-sans antialiased bg-gradient-to-br from-purple-900 via-purple-800 to-indigo-900">
+<body class="min-h-screen text-slate-700 antialiased">
+    <div class="absolute inset-0 overflow-hidden pointer-events-none">
+        <div class="absolute -top-24 left-1/4 h-64 w-64 rounded-full bg-blue-400/20 blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-indigo-300/20 blur-3xl"></div>
+    </div>
+
     <?php echo $__env->yieldContent('content'); ?>
 </body>
 </html>

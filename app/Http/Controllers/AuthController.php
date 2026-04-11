@@ -127,7 +127,7 @@ class AuthController extends Controller
         }
 
         $request->validate([
-            'profile_photo' => 'required|file|max:102400',
+            'profile_photo' => 'required|image|mimes:jpeg,jpg,png,gif,webp|max:5120',
         ]);
 
         $file = $request->file('profile_photo');
@@ -138,21 +138,17 @@ class AuthController extends Controller
                 ->withInput();
         }
 
-        $extension = strtolower((string) $file->getClientOriginalExtension());
-        $mimeType = strtolower((string) $file->getMimeType());
-
-        if ($extension === 'mp4' || $mimeType === 'video/mp4') {
-            return back()
-                ->withErrors(['profile_photo' => 'File MP4 tidak diperbolehkan.'])
-                ->withInput();
-        }
-
         try {
             // Store new photo first so the existing profile stays intact if anything fails
             $path = $file->store('avatars', 'public');
+            $oldProfilePhoto = $this->normalizePublicPath($user->profile_photo);
 
-            if ($user->profile_photo) {
-                Storage::disk('public')->delete($user->profile_photo);
+            if ($oldProfilePhoto
+                && $oldProfilePhoto !== 'avatars/rinn.jpg'
+                && $oldProfilePhoto !== $path
+                && Storage::disk('public')->exists($oldProfilePhoto)
+            ) {
+                Storage::disk('public')->delete($oldProfilePhoto);
             }
 
             $user->update(['profile_photo' => $path]);
@@ -168,6 +164,28 @@ class AuthController extends Controller
                 ->withErrors(['profile_photo' => 'Upload gagal saat menyimpan file.'])
                 ->withInput();
         }
+    }
+
+    private function normalizePublicPath(?string $value): ?string
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            $path = parse_url($value, PHP_URL_PATH);
+            $value = is_string($path) ? $path : '';
+        }
+
+        $value = str_replace('\\', '/', $value);
+        $value = ltrim($value, '/');
+
+        if (str_starts_with($value, 'storage/')) {
+            $value = substr($value, strlen('storage/'));
+        }
+
+        return $value !== '' ? $value : null;
     }
 
     // Logout

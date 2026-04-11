@@ -4,81 +4,74 @@
 @section('page-description', 'Kelola identitas akun dengan tampilan yang bersih dan fokus.')
 
 @section('content')
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div class="rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/60 p-8">
-            <div class="text-center">
-                <div class="w-36 h-36 mx-auto rounded-[2rem] overflow-hidden ring-8 ring-slate-100 shadow-lg">
-                    <img src="{{ $user->profilePhotoUrl() }}" alt="Foto Profil {{ $user->name }}" class="w-full h-full object-cover">
-                </div>
-                <h3 class="mt-6 text-3xl font-black text-slate-900">{{ $user->name }}</h3>
-                <p class="mt-2 text-slate-500">{{ $user->email }}</p>
-                <span class="inline-flex mt-4 px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold capitalize">{{ $user->role }}</span>
-            </div>
-
-            <div class="mt-8 grid grid-cols-2 gap-4">
-                <div class="rounded-2xl bg-slate-50 p-4">
-                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Status</p>
-                    <p class="mt-2 font-semibold text-slate-900">Aktif</p>
-                </div>
-                <div class="rounded-2xl bg-slate-50 p-4">
-                    <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">Akun</p>
-                    <p class="mt-2 font-semibold text-slate-900">Terverifikasi</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="xl:col-span-2 rounded-[2rem] bg-white border border-slate-100 shadow-xl shadow-slate-200/60 p-8 sm:p-10">
+    <div class="mx-auto max-w-4xl">
+        <div class="rounded-[2rem] border border-slate-100 bg-white p-6 shadow-xl shadow-slate-200/60 sm:p-8">
             @if (session('success'))
                 <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-emerald-800">
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div class="flex items-start justify-between gap-4 mb-8">
-                <div>
-                    <p class="text-xs font-bold uppercase tracking-[0.24em] text-slate-400">Pengaturan Profil</p>
-                    <h3 class="mt-2 text-2xl sm:text-3xl font-black text-slate-900">Informasi Profil</h3>
+            <div class="grid grid-cols-1 gap-6 lg:grid-cols-[220px_1fr]">
+                <div class="text-center lg:text-left">
+                    <div class="mx-auto h-36 w-36 overflow-hidden rounded-[1.5rem] ring-4 ring-slate-100 shadow-md lg:mx-0">
+                        <img src="{{ $user->profilePhotoUrl() }}" alt="Foto Profil {{ $user->name }}" class="h-full w-full object-cover">
+                    </div>
+                    <h3 class="mt-4 text-xl font-black text-slate-900">{{ $user->name }}</h3>
+                    <p class="mt-1 text-sm text-slate-500">{{ $user->email }}</p>
+                    <span class="mt-3 inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold capitalize text-blue-700">{{ $user->role }}</span>
                 </div>
-                <div class="hidden sm:flex items-center gap-2 rounded-full bg-slate-50 px-4 py-2 text-sm font-semibold text-slate-600">
-                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-                    Tampilan bersih
-                </div>
-            </div>
 
-            @if (($user->role ?? 'user') === 'admin')
-                <div class="rounded-3xl border border-amber-200 bg-amber-50 p-6 text-amber-900">
-                    <p class="font-bold">Foto profil admin dikunci</p>
-                    <p class="mt-2 text-sm leading-relaxed">Admin hanya dapat melihat profil. Foto profil tidak bisa diubah dari halaman ini.</p>
-                </div>
-            @else
-                <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-                    @csrf
-                    <div class="rounded-3xl border border-dashed border-slate-200 bg-slate-50/70 p-6 sm:p-8">
-                        <label class="block text-sm font-semibold text-slate-700 mb-3">Unggah foto profil baru</label>
-                        <input type="file" name="profile_photo" id="photoInput" accept="*/*" class="hidden" required>
-                        <label for="photoInput" class="flex cursor-pointer flex-col items-center justify-center rounded-3xl border border-slate-200 bg-white px-6 py-12 text-center transition hover:border-blue-300 hover:shadow-md">
-                            <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mb-4">
-                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
-                                </svg>
-                            </div>
-                            <p class="text-lg font-bold text-slate-900">Klik untuk pilih file</p>
-                            <p class="mt-2 text-sm text-slate-500">Semua format file kecuali MP4, maksimal 100 MB</p>
-                        </label>
-                        @error('profile_photo')
-                            <p class="mt-4 text-sm font-medium text-rose-600">{{ $message }}</p>
-                        @enderror
+                <div>
+                    <div>
+                        <p class="text-xs font-bold uppercase tracking-[0.22em] text-slate-400">Profil Pengguna</p>
+                        <h4 class="mt-2 text-2xl font-black text-slate-900">Informasi Akun</h4>
                     </div>
 
-                    <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-slate-900 px-6 py-4 font-semibold text-white transition hover:bg-slate-800">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                        </svg>
-                        Simpan Profil
-                    </button>
-                </form>
-            @endif
+                    <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-sm font-semibold text-slate-700">Nama Akun</label>
+                            <input type="text" value="{{ $user->name }}" readonly class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900">
+                        </div>
+                        <div class="sm:col-span-2">
+                            <label class="mb-1.5 block text-sm font-semibold text-slate-700">Akun Gmail</label>
+                            <input type="text" value="{{ $user->email }}" readonly class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-semibold text-slate-700">Role</label>
+                            <input type="text" value="{{ ucfirst($user->role ?? 'user') }}" readonly class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900">
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-semibold text-slate-700">Status</label>
+                            <input type="text" value="Aktif" readonly class="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900">
+                        </div>
+                    </div>
+
+                    <div class="mt-6 border-t border-slate-100 pt-6">
+                        @if (($user->role ?? 'user') === 'admin')
+                            <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+                                Foto profil admin dikunci dan tidak dapat diganti.
+                            </div>
+                        @else
+                            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+                                @csrf
+                                <div>
+                                    <label for="photoInput" class="mb-1.5 block text-sm font-semibold text-slate-700">Upload Foto Profil</label>
+                                    <input type="file" name="profile_photo" id="photoInput" accept="image/jpeg,image/jpg,image/png,image/gif,image/webp" required class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 file:mr-3 file:rounded-md file:border-0 file:bg-slate-900 file:px-3 file:py-1.5 file:text-xs file:font-semibold file:text-white hover:file:bg-slate-800">
+                                    <p class="mt-1.5 text-xs text-slate-500">Format: JPG, PNG, GIF, WEBP (maksimal 5 MB)</p>
+                                    @error('profile_photo')
+                                        <p class="mt-2 text-sm font-medium text-rose-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+
+                                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+                                    Simpan Foto Profil
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 @endsection

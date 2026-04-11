@@ -2,11 +2,16 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BorrowController;
+use App\Http\Controllers\PublicStorageController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return auth()->check() ? redirect()->route('dashboard') : redirect()->route('login');
 });
+
+Route::get('/storage/{path}', [PublicStorageController::class, 'show'])
+    ->where('path', '.*')
+    ->name('public.storage.show');
 
 // Guest only - redirect logged users to dashboard
 Route::middleware('guest')->group(function () {

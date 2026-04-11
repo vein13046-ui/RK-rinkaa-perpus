@@ -43,7 +43,7 @@
     @endphp
 
     <div class="min-h-screen flex">
-        <aside class="hidden lg:flex w-80 flex-col border-r border-slate-200/80 bg-white/85 backdrop-blur-xl shadow-[12px_0_40px_rgba(15,23,42,0.04)]">
+        <aside class="hidden lg:flex w-80 h-screen sticky top-0 flex-col overflow-y-auto border-r border-slate-200/80 bg-white/85 backdrop-blur-xl shadow-[12px_0_40px_rgba(15,23,42,0.04)]">
             <div class="px-8 py-7 border-b border-slate-100">
                 <a href="{{ route('dashboard') }}" class="flex items-center gap-3">
                     <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white flex items-center justify-center font-black text-xl shadow-lg shadow-blue-200">
@@ -158,17 +158,17 @@
 
         <div class="flex-1 min-w-0">
             <header class="sticky top-0 z-20 border-b border-slate-200/80 bg-white/75 backdrop-blur-xl">
-                <div class="px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between gap-4">
-                    <div class="min-w-0">
+                <div class="px-4 sm:px-6 lg:px-8 min-h-20 py-3 flex items-start sm:items-center justify-between gap-3 sm:gap-4">
+                    <div class="min-w-0 flex-1">
                         <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-slate-400">RinKa Perpus</p>
-                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900">@yield('page-title', 'Dashboard')</h2>
+                        <h2 class="text-xl sm:text-2xl font-black tracking-tight text-slate-900 truncate">@yield('page-title', 'Dashboard')</h2>
                         @hasSection('page-description')
-                            <p class="text-sm text-slate-500 mt-1">@yield('page-description')</p>
+                            <p class="hidden sm:block text-sm text-slate-500 mt-1 truncate">@yield('page-description')</p>
                         @endif
                     </div>
 
-                    <div class="flex items-center gap-3">
-                        <div class="hidden sm:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+                    <div class="flex shrink-0 items-center gap-2 sm:gap-3">
+                        <div class="hidden xl:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
                             <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
                             <span class="text-sm font-medium text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</span>
                         </div>
@@ -183,7 +183,7 @@
                                 @endif
                             </button>
 
-                            <div id="notifDropdown" class="absolute right-0 mt-3 w-80 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
+                            <div id="notifDropdown" class="absolute right-0 mt-3 w-[min(20rem,calc(100vw-1rem))] sm:w-80 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
                                 <div class="px-4 py-4 border-b border-slate-100">
                                     <p class="text-sm font-bold text-slate-900">Notifikasi</p>
                                     <p class="text-xs text-slate-500 mt-1">{{ $isAdmin ? 'Permintaan peminjaman yang menunggu konfirmasi' : 'Status peminjaman terbaru dari akunmu' }}</p>
@@ -220,15 +220,15 @@
                         </div>
 
                         <div class="relative">
-                            <button id="profileBtn" class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm transition hover:border-blue-200 hover:shadow-md">
+                            <button id="profileBtn" class="flex max-w-[14rem] items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2.5 shadow-sm transition hover:border-blue-200 hover:shadow-md">
                                 <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="w-10 h-10 rounded-xl object-cover">
-                                <div class="hidden md:block text-left">
-                                    <p class="text-sm font-semibold text-slate-900 leading-tight">{{ $user->name }}</p>
+                                <div class="hidden lg:block min-w-0 text-left">
+                                    <p class="text-sm font-semibold text-slate-900 leading-tight truncate">{{ $user->name }}</p>
                                     <p class="text-xs text-slate-500 capitalize">{{ $user->role }}</p>
                                 </div>
                             </button>
 
-                            <div id="profileDropdown" class="absolute right-0 mt-3 w-72 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
+                            <div id="profileDropdown" class="absolute right-0 mt-3 w-[min(18rem,calc(100vw-1rem))] sm:w-72 rounded-3xl border border-slate-200 bg-white p-2 shadow-2xl opacity-0 invisible scale-95 origin-top-right transition-all duration-200 z-50">
                                 <div class="px-4 py-4 border-b border-slate-100">
                                     <div class="flex items-center gap-3">
                                         <img src="{{ $user->profilePhotoUrl() }}" alt="{{ $user->name }}" class="w-12 h-12 rounded-2xl object-cover shadow-sm">

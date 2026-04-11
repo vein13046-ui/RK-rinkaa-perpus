@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
+    private const ADMIN_FIXED_AVATAR = 'avatars/admin-profile.jpg';
 
     /**
      * The attributes that are mass assignable.
@@ -54,15 +56,45 @@ class User extends Authenticatable
      */
     public function profilePhotoUrl(): string
     {
-        if ($this->profile_photo) {
-            return asset('storage/' . $this->profile_photo);
+        if (($this->role ?? 'user') === 'admin') {
+            $fixedAdminAvatar = public_path(self::ADMIN_FIXED_AVATAR);
+            if (is_file($fixedAdminAvatar)) {
+                return asset(self::ADMIN_FIXED_AVATAR);
+            }
+
+            return asset('default-avatar.svg');
         }
 
-        if (($this->role ?? 'user') === 'admin') {
-            return asset('storage/avatars/rinn.jpg');
+        $disk = Storage::disk('public');
+        $profilePhotoPath = $this->normalizePublicPath($this->profile_photo);
+
+        if ($profilePhotoPath && $disk->exists($profilePhotoPath)) {
+            return $disk->url($profilePhotoPath);
         }
 
         return asset('default-avatar.svg');
+    }
+
+    private function normalizePublicPath(?string $value): ?string
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        if (filter_var($value, FILTER_VALIDATE_URL)) {
+            $path = parse_url($value, PHP_URL_PATH);
+            $value = is_string($path) ? $path : '';
+        }
+
+        $value = str_replace('\\', '/', $value);
+        $value = ltrim($value, '/');
+
+        if (str_starts_with($value, 'storage/')) {
+            $value = substr($value, strlen('storage/'));
+        }
+
+        return $value !== '' ? $value : null;
     }
 
     public function borrowRequests(): HasMany

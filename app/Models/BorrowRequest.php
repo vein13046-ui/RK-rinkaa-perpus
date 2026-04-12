@@ -16,6 +16,14 @@ class BorrowRequest extends Model
         'book_id',
         'borrower_name',
         'borrow_days',
+        'payment_method',
+        'pickup_method',
+        'delivery_distance_meters',
+        'daily_rate',
+        'delivery_rate_per_100m',
+        'daily_cost',
+        'delivery_cost',
+        'total_cost',
         'status',
         'approved_by',
         'admin_note',
@@ -43,6 +51,12 @@ class BorrowRequest extends Model
         'returned_at' => 'datetime',
         'due_date' => 'date',
         'borrow_days' => 'integer',
+        'delivery_distance_meters' => 'integer',
+        'daily_rate' => 'integer',
+        'delivery_rate_per_100m' => 'integer',
+        'daily_cost' => 'integer',
+        'delivery_cost' => 'integer',
+        'total_cost' => 'integer',
     ];
 
     public function user(): BelongsTo
@@ -127,6 +141,23 @@ class BorrowRequest extends Model
             'cancelled' => 'Dibatalkan',
             'rejected' => 'Ditolak',
             default => ucfirst((string) $this->status),
+        };
+    }
+
+    public function getPaymentMethodLabelAttribute(): string
+    {
+        return match ($this->payment_method) {
+            'cash' => 'Cash',
+            default => ucfirst((string) $this->payment_method),
+        };
+    }
+
+    public function getPickupMethodLabelAttribute(): string
+    {
+        return match ($this->pickup_method) {
+            'delivery' => 'Diantar',
+            'self_pickup' => 'Diambil ke tempat',
+            default => ucfirst((string) $this->pickup_method),
         };
     }
 }

@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Storage;
 class BorrowController extends Controller
 {
     private const PICKUP_WINDOW_HOURS = 8;
+    private const DAILY_RATE = 3000;
+    private const DELIVERY_RATE_PER_100M = 500;
 
     public function indexUser()
     {
@@ -50,6 +52,9 @@ class BorrowController extends Controller
         $request->validate([
             'borrower_name' => 'required|string|max:255',
             'borrow_days' => 'required|integer|min:1|max:3',
+            'payment_method' => 'required|in:cash',
+            'pickup_method' => 'required|in:self_pickup,delivery',
+            'delivery_distance_meters' => 'required_if:pickup_method,delivery|nullable|integer|min:1|max:100000',
             'damage_agreement' => 'accepted',
         ]);
 
@@ -70,11 +75,30 @@ class BorrowController extends Controller
             ])->withInput();
         }
 
+        $borrowDays = (int) $request->borrow_days;
+        $pickupMethod = (string) $request->pickup_method;
+        $deliveryDistanceMeters = $pickupMethod === 'delivery'
+            ? (int) $request->delivery_distance_meters
+            : 0;
+        $dailyCost = $borrowDays * self::DAILY_RATE;
+        $deliveryCost = $pickupMethod === 'delivery'
+            ? (int) ceil($deliveryDistanceMeters / 100) * self::DELIVERY_RATE_PER_100M
+            : 0;
+        $totalCost = $dailyCost + $deliveryCost;
+
         BorrowRequest::create([
             'user_id' => Auth::id(),
             'book_id' => $book->id,
             'borrower_name' => $request->borrower_name,
-            'borrow_days' => (int) $request->borrow_days,
+            'borrow_days' => $borrowDays,
+            'payment_method' => 'cash',
+            'pickup_method' => $pickupMethod,
+            'delivery_distance_meters' => $deliveryDistanceMeters,
+            'daily_rate' => self::DAILY_RATE,
+            'delivery_rate_per_100m' => self::DELIVERY_RATE_PER_100M,
+            'daily_cost' => $dailyCost,
+            'delivery_cost' => $deliveryCost,
+            'total_cost' => $totalCost,
             'status' => 'pending',
             'damage_agreement' => true,
         ]);

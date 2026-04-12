@@ -40,6 +40,8 @@
                         <th class="px-5 py-4">Buku</th>
                         <th class="px-5 py-4">Nama Peminjam</th>
                         <th class="px-5 py-4 text-center">Hari</th>
+                        <th class="px-5 py-4">Metode</th>
+                        <th class="px-5 py-4">Biaya</th>
                         <th class="px-5 py-4 text-center">Status</th>
                         <th class="px-5 py-4 text-center">Tanggal</th>
                         <th class="px-5 py-4 text-center">Aksi</th>
@@ -54,6 +56,22 @@
                             </td>
                             <td class="px-5 py-4 text-slate-600">{{ $borrow->borrower_name }}</td>
                             <td class="px-5 py-4 text-center font-semibold text-slate-800">{{ $borrow->borrow_days }}</td>
+                            <td class="px-5 py-4">
+                                <div class="text-xs text-slate-500">Pembayaran</div>
+                                <div class="text-sm font-semibold text-slate-800">{{ $borrow->payment_method_label ?? 'Cash' }}</div>
+                                <div class="mt-2 text-xs text-slate-500">Pengambilan</div>
+                                <div class="text-sm font-semibold text-slate-800">{{ $borrow->pickup_method_label ?? 'Diambil ke tempat' }}</div>
+                                @if (($borrow->pickup_method ?? 'self_pickup') === 'delivery' && ($borrow->delivery_distance_meters ?? 0) > 0)
+                                    <div class="mt-1 text-xs text-slate-500">
+                                        Jarak: {{ number_format((int) $borrow->delivery_distance_meters) }} m
+                                    </div>
+                                @endif
+                            </td>
+                            <td class="px-5 py-4">
+                                <div class="text-xs text-slate-500">Sewa: Rp{{ number_format((int) ($borrow->daily_cost ?? 0)) }}</div>
+                                <div class="text-xs text-slate-500 mt-1">Antar: Rp{{ number_format((int) ($borrow->delivery_cost ?? 0)) }}</div>
+                                <div class="mt-2 text-sm font-black text-slate-900">Total: Rp{{ number_format((int) ($borrow->total_cost ?? 0)) }}</div>
+                            </td>
                             <td class="px-5 py-4 text-center">
                                 <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-bold uppercase tracking-[0.18em]
                                     {{ $borrow->status === 'pending' ? 'bg-amber-100 text-amber-700' : '' }}
@@ -117,7 +135,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-5 py-16 text-center text-slate-500">
+                            <td colspan="8" class="px-5 py-16 text-center text-slate-500">
                                 Belum ada peminjaman buku.
                             </td>
                         </tr>

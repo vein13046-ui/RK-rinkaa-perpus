@@ -185,26 +185,68 @@
                         <form id="borrowForm" method="POST" class="space-y-4">
                             @csrf
                             <input type="hidden" name="pickup_code" id="pickupCodeInput">
-                            <div>
-                                <label class="mb-1.5 block text-sm font-semibold text-slate-700">Nama Peminjam</label>
-                                <input type="text" name="borrower_name" value="{{ Auth::user()->name }}" required class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
-                            </div>
 
-                            <div>
-                                <label class="mb-1.5 block text-sm font-semibold text-slate-700">Lama Peminjaman</label>
-                                <select name="borrow_days" required class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
-                                    <option value="">Pilih hari</option>
-                                    <option value="1">1 Hari</option>
-                                    <option value="2">2 Hari</option>
-                                    <option value="3">3 Hari</option>
-                                </select>
-                                <p class="mt-1.5 text-[11px] text-slate-500">Maksimal 3 hari.</p>
-                            </div>
+                            <div id="borrowConfigFields" class="space-y-4">
+                                <div>
+                                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Nama Peminjam</label>
+                                    <input id="borrowerNameInput" type="text" name="borrower_name" data-default="{{ Auth::user()->name }}" value="{{ Auth::user()->name }}" required class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+                                </div>
 
-                            <label class="flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs sm:text-sm text-slate-600">
-                                <input type="checkbox" name="damage_agreement" value="1" required class="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
-                                <span>Saya menyetujui bahwa jika buku hilang atau rusak, saya siap mengganti rugi sesuai ketentuan yang berlaku.</span>
-                            </label>
+                                <div>
+                                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Lama Peminjaman</label>
+                                    <select id="borrowDaysInput" name="borrow_days" required class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+                                        <option value="">Pilih hari</option>
+                                        <option value="1">1 Hari</option>
+                                        <option value="2">2 Hari</option>
+                                        <option value="3">3 Hari</option>
+                                    </select>
+                                    <p class="mt-1.5 text-[11px] text-slate-500">Biaya sewa Rp3.000 per hari (maksimal 3 hari).</p>
+                                </div>
+
+                                <div>
+                                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Metode Pembayaran</label>
+                                    <select id="paymentMethodInput" name="payment_method" required class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+                                        <option value="cash">Cash</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Metode Pengambilan</label>
+                                    <select id="pickupMethodInput" name="pickup_method" required class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100">
+                                        <option value="self_pickup">Diambil ke tempat</option>
+                                        <option value="delivery">Diantar</option>
+                                    </select>
+                                </div>
+
+                                <div id="deliveryDistanceWrap" class="hidden">
+                                    <label class="mb-1.5 block text-sm font-semibold text-slate-700">Jarak Antar (meter)</label>
+                                    <input id="deliveryDistanceInput" type="number" name="delivery_distance_meters" min="1" step="1" class="w-full rounded-xl border border-slate-200 px-3.5 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-400 focus:ring-4 focus:ring-blue-100" placeholder="Contoh: 350">
+                                    <p class="mt-1.5 text-[11px] text-slate-500">Tarif antar Rp500 per 100 meter.</p>
+                                </div>
+
+                                <div id="borrowCostCard" class="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Estimasi Biaya</p>
+                                    <div class="mt-2 space-y-1.5 text-sm text-slate-700">
+                                        <div class="flex items-center justify-between">
+                                            <span>Biaya sewa</span>
+                                            <span id="dailyCostLabel" class="font-semibold">Rp0</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>Biaya antar</span>
+                                            <span id="deliveryCostLabel" class="font-semibold">Rp0</span>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 border-t border-slate-200 pt-2.5 flex items-center justify-between">
+                                        <span class="text-sm font-bold text-slate-800">Total</span>
+                                        <span id="totalCostLabel" class="text-base font-black text-slate-900">Rp0</span>
+                                    </div>
+                                </div>
+
+                                <label class="flex items-start gap-2.5 rounded-xl border border-slate-200 bg-slate-50 p-3 text-xs sm:text-sm text-slate-600">
+                                    <input id="damageAgreementInput" type="checkbox" name="damage_agreement" value="1" required class="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500">
+                                    <span>Saya menyetujui bahwa jika buku hilang atau rusak, saya siap mengganti rugi sesuai ketentuan yang berlaku.</span>
+                                </label>
+                            </div>
 
                             <div id="pickupPanel" class="hidden rounded-2xl border border-slate-200 bg-white p-4">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Kode Pickup</p>
@@ -217,8 +259,8 @@
                                 <button type="button" id="borrowCancel" class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50">
                                     Batal
                                 </button>
-                                <button type="submit" class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
-                                    Konfirmasi
+                                <button type="submit" id="borrowSubmitBtn" class="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-3 text-sm font-semibold text-white transition hover:bg-slate-800">
+                                    Konfirmasi Pinjam
                                 </button>
                             </div>
                         </form>
@@ -231,6 +273,8 @@
 
 @push('scripts')
     <script>
+        const DAILY_RATE = 3000;
+        const DELIVERY_RATE_PER_100M = 500;
         const borrowModal = document.getElementById('borrowModal');
         const borrowForm = document.getElementById('borrowForm');
         const borrowTitle = document.getElementById('borrowTitle');
@@ -244,6 +288,118 @@
         const pickupBarcode = document.getElementById('pickupBarcode');
         const pickupCodeLabel = document.getElementById('pickupCodeLabel');
         const pickupCodeInput = document.getElementById('pickupCodeInput');
+        const borrowConfigFields = document.getElementById('borrowConfigFields');
+        const borrowerNameInput = document.getElementById('borrowerNameInput');
+        const borrowDaysInput = document.getElementById('borrowDaysInput');
+        const paymentMethodInput = document.getElementById('paymentMethodInput');
+        const pickupMethodInput = document.getElementById('pickupMethodInput');
+        const deliveryDistanceWrap = document.getElementById('deliveryDistanceWrap');
+        const deliveryDistanceInput = document.getElementById('deliveryDistanceInput');
+        const damageAgreementInput = document.getElementById('damageAgreementInput');
+        const dailyCostLabel = document.getElementById('dailyCostLabel');
+        const deliveryCostLabel = document.getElementById('deliveryCostLabel');
+        const totalCostLabel = document.getElementById('totalCostLabel');
+        const borrowSubmitBtn = document.getElementById('borrowSubmitBtn');
+
+        function formatRupiah(value) {
+            const amount = Number.isFinite(value) ? value : 0;
+            return 'Rp' + new Intl.NumberFormat('id-ID').format(amount);
+        }
+
+        function toggleDeliveryDistanceField() {
+            if (!pickupMethodInput || !deliveryDistanceWrap || !deliveryDistanceInput) {
+                return;
+            }
+
+            const isDelivery = pickupMethodInput.value === 'delivery';
+            deliveryDistanceWrap.classList.toggle('hidden', !isDelivery);
+            deliveryDistanceInput.required = isDelivery && !borrowConfigFields.classList.contains('hidden');
+
+            if (!isDelivery) {
+                deliveryDistanceInput.value = '';
+            }
+        }
+
+        function updateBorrowCostCard() {
+            const borrowDays = parseInt((borrowDaysInput && borrowDaysInput.value) ? borrowDaysInput.value : '0', 10) || 0;
+            const rentalCost = borrowDays * DAILY_RATE;
+            const isDelivery = pickupMethodInput && pickupMethodInput.value === 'delivery';
+            const distanceMeters = parseInt((deliveryDistanceInput && deliveryDistanceInput.value) ? deliveryDistanceInput.value : '0', 10) || 0;
+            const deliveryCost = isDelivery ? Math.ceil(distanceMeters / 100) * DELIVERY_RATE_PER_100M : 0;
+            const totalCost = rentalCost + deliveryCost;
+
+            if (dailyCostLabel) {
+                dailyCostLabel.textContent = formatRupiah(rentalCost);
+            }
+            if (deliveryCostLabel) {
+                deliveryCostLabel.textContent = formatRupiah(deliveryCost);
+            }
+            if (totalCostLabel) {
+                totalCostLabel.textContent = formatRupiah(totalCost);
+            }
+        }
+
+        function setBorrowFieldsRequired(isRequired) {
+            if (borrowerNameInput) {
+                borrowerNameInput.required = isRequired;
+            }
+            if (borrowDaysInput) {
+                borrowDaysInput.required = isRequired;
+            }
+            if (paymentMethodInput) {
+                paymentMethodInput.required = isRequired;
+            }
+            if (pickupMethodInput) {
+                pickupMethodInput.required = isRequired;
+            }
+            if (damageAgreementInput) {
+                damageAgreementInput.required = isRequired;
+            }
+
+            toggleDeliveryDistanceField();
+
+            if (!isRequired && deliveryDistanceInput) {
+                deliveryDistanceInput.required = false;
+            }
+        }
+
+        function resetBorrowConfig() {
+            if (borrowerNameInput) {
+                borrowerNameInput.value = borrowerNameInput.dataset.default || '';
+            }
+            if (borrowDaysInput) {
+                borrowDaysInput.value = '';
+            }
+            if (paymentMethodInput) {
+                paymentMethodInput.value = 'cash';
+            }
+            if (pickupMethodInput) {
+                pickupMethodInput.value = 'self_pickup';
+            }
+            if (deliveryDistanceInput) {
+                deliveryDistanceInput.value = '';
+            }
+            if (damageAgreementInput) {
+                damageAgreementInput.checked = false;
+            }
+
+            toggleDeliveryDistanceField();
+            updateBorrowCostCard();
+        }
+
+        function setBorrowMode(isPickup) {
+            if (!borrowConfigFields || !pickupPanel) {
+                return;
+            }
+
+            borrowConfigFields.classList.toggle('hidden', isPickup);
+            pickupPanel.classList.toggle('hidden', !isPickup);
+            setBorrowFieldsRequired(!isPickup);
+
+            if (borrowSubmitBtn) {
+                borrowSubmitBtn.textContent = isPickup ? 'Konfirmasi Ambil' : 'Konfirmasi Pinjam';
+            }
+        }
 
         function buildBarcode(code) {
             if (!pickupBarcode) {
@@ -269,6 +425,16 @@
             borrowModal.classList.remove('hidden');
             borrowModal.classList.add('flex');
 
+            if (isPickup) {
+                setBorrowMode(true);
+            } else {
+                setBorrowMode(false);
+                resetBorrowConfig();
+                pickupCodeInput.value = '';
+                pickupCodeLabel.textContent = '';
+                pickupBarcode.innerHTML = '';
+            }
+
             const applyData = function (data) {
                 borrowTitle.textContent = data.title || button.dataset.title || '';
                 borrowMeta.textContent = [
@@ -289,15 +455,9 @@
                 }
 
                 if (isPickup) {
-                    pickupPanel.classList.remove('hidden');
                     pickupCodeInput.value = data.code || button.dataset.code || '';
                     pickupCodeLabel.textContent = data.code || button.dataset.code || '';
                     buildBarcode(data.code || button.dataset.code || '');
-                } else {
-                    pickupPanel.classList.add('hidden');
-                    pickupCodeInput.value = '';
-                    pickupCodeLabel.textContent = '';
-                    pickupBarcode.innerHTML = '';
                 }
             };
 
@@ -338,6 +498,21 @@
                 openBorrowModal(button, true);
             });
         });
+
+        if (pickupMethodInput) {
+            pickupMethodInput.addEventListener('change', function () {
+                toggleDeliveryDistanceField();
+                updateBorrowCostCard();
+            });
+        }
+
+        if (borrowDaysInput) {
+            borrowDaysInput.addEventListener('change', updateBorrowCostCard);
+        }
+
+        if (deliveryDistanceInput) {
+            deliveryDistanceInput.addEventListener('input', updateBorrowCostCard);
+        }
 
         if (borrowClose) {
             borrowClose.addEventListener('click', closeBorrowModal);

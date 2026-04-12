@@ -21,6 +21,16 @@
         }
         html.theme-dark {
             color-scheme: dark;
+            --dm-bg: #0f141d;
+            --dm-surface: #151c28;
+            --dm-surface-2: #1b2432;
+            --dm-soft: #222d3f;
+            --dm-border: #2d394d;
+            --dm-text: #edf2fa;
+            --dm-muted: #aab6c9;
+            --dm-accent: #4f77ff;
+            --dm-accent-soft: #273857;
+            --dm-accent-text: #dbe6ff;
         }
         body {
             font-family: 'Inter', sans-serif;
@@ -31,49 +41,55 @@
             transition: background 0.25s ease, color 0.25s ease;
         }
         html.theme-dark body {
-            color: #dbe5f3;
-            background: #0b1220;
+            color: var(--dm-text);
+            background: var(--dm-bg);
         }
         html.theme-dark .bg-white,
         html.theme-dark .bg-white\/85,
         html.theme-dark .bg-white\/75 {
-            background-color: #111a2e !important;
+            background-color: var(--dm-surface) !important;
         }
         html.theme-dark .bg-slate-50,
         html.theme-dark .bg-slate-50\/70,
         html.theme-dark .bg-slate-50\/80,
         html.theme-dark .bg-slate-100 {
-            background-color: #0f172a !important;
+            background-color: var(--dm-surface-2) !important;
+        }
+        html.theme-dark .bg-blue-50,
+        html.theme-dark .bg-emerald-50,
+        html.theme-dark .bg-amber-50,
+        html.theme-dark .bg-rose-100,
+        html.theme-dark .bg-violet-100 {
+            background-color: var(--dm-accent-soft) !important;
         }
         html.theme-dark .border-slate-100,
         html.theme-dark .border-slate-200,
-        html.theme-dark .border-slate-200\/80 {
-            border-color: #25324a !important;
+        html.theme-dark .border-slate-200\/80,
+        html.theme-dark .border-emerald-200,
+        html.theme-dark .border-amber-200,
+        html.theme-dark .border-rose-200 {
+            border-color: var(--dm-border) !important;
         }
-        html.theme-dark .text-slate-900 {
-            color: #f1f5f9 !important;
-        }
-        html.theme-dark .text-slate-800 {
-            color: #dbe5f3 !important;
-        }
+        html.theme-dark .text-slate-900,
+        html.theme-dark .text-slate-800,
         html.theme-dark .text-slate-700 {
-            color: #c5d2e7 !important;
+            color: var(--dm-text) !important;
         }
         html.theme-dark .text-slate-600,
         html.theme-dark .text-slate-500,
         html.theme-dark .text-slate-400 {
-            color: #90a4bf !important;
+            color: var(--dm-muted) !important;
         }
         html.theme-dark input,
         html.theme-dark select,
         html.theme-dark textarea {
-            background-color: #0a1323 !important;
-            border-color: #25324a !important;
-            color: #dbe5f3 !important;
+            background-color: #101828 !important;
+            border-color: var(--dm-border) !important;
+            color: var(--dm-text) !important;
         }
         html.theme-dark input::placeholder,
         html.theme-dark textarea::placeholder {
-            color: #6f839e !important;
+            color: #7f8ca1 !important;
         }
         html.theme-dark [class*="shadow"] {
             box-shadow: none !important;
@@ -89,19 +105,19 @@
         html.theme-dark .bg-gradient-to-l,
         html.theme-dark .bg-gradient-to-t {
             background-image: none !important;
-            background-color: #1d2a41 !important;
+            background-color: var(--dm-surface-2) !important;
         }
         html.theme-dark .bg-blue-600,
         html.theme-dark .bg-cyan-600,
         html.theme-dark .bg-indigo-700,
         html.theme-dark .bg-indigo-600 {
-            background-color: #2a3b57 !important;
+            background-color: var(--dm-accent) !important;
         }
         html.theme-dark .hover\:bg-blue-50:hover,
         html.theme-dark .hover\:bg-slate-50:hover,
         html.theme-dark .hover\:bg-cyan-50:hover,
         html.theme-dark .hover\:bg-rose-50:hover {
-            background-color: #1b263b !important;
+            background-color: var(--dm-soft) !important;
         }
         html.theme-dark .text-blue-700,
         html.theme-dark .text-blue-600,
@@ -111,7 +127,18 @@
         html.theme-dark .text-violet-600,
         html.theme-dark .text-amber-700,
         html.theme-dark .text-rose-600 {
-            color: #c3d5ee !important;
+            color: var(--dm-accent-text) !important;
+        }
+        html.theme-dark .hover\:text-blue-700:hover,
+        html.theme-dark .hover\:text-blue-800:hover,
+        html.theme-dark .hover\:text-rose-600:hover {
+            color: #ffffff !important;
+        }
+        html.theme-dark .ring-white {
+            --tw-ring-color: var(--dm-border) !important;
+        }
+        html.theme-dark .bg-black\/15 {
+            background-color: rgba(15, 20, 29, 0.35) !important;
         }
         ::-webkit-scrollbar {
             width: 8px;
@@ -124,10 +151,10 @@
             border-radius: 999px;
         }
         html.theme-dark ::-webkit-scrollbar-track {
-            background: #1e293b;
+            background: #18202e;
         }
         html.theme-dark ::-webkit-scrollbar-thumb {
-            background: #475569;
+            background: #3a4a61;
         }
     </style>
 </head>
@@ -162,7 +189,7 @@
                 <p class="px-3 mb-3 text-[11px] font-bold uppercase tracking-[0.24em] text-slate-400">Menu Utama</p>
 
                 <a href="{{ route('dashboard') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeDashboard ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeDashboard ? 'bg-white/15' : 'bg-blue-50' }}">
+                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeDashboard ? 'bg-black/15' : 'bg-blue-50' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
                         </svg>
@@ -172,7 +199,7 @@
 
                 @if ($isAdmin)
                     <a href="{{ route('admin.books.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeBooks ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBooks ? 'bg-white/15' : 'bg-blue-50' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBooks ? 'bg-black/15' : 'bg-blue-50' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
@@ -180,7 +207,7 @@
                         <span class="font-semibold">Data Buku</span>
                     </a>
                     <a href="{{ route('admin.books.create') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('admin.books.create') ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ request()->routeIs('admin.books.create') ? 'bg-white/15' : 'bg-emerald-50' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ request()->routeIs('admin.books.create') ? 'bg-black/15' : 'bg-emerald-50' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
                             </svg>
@@ -189,7 +216,7 @@
                     </a>
                 @else
                     <a href="{{ route('user.books') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeUserBooks ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeUserBooks ? 'bg-white/15' : 'bg-blue-50' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeUserBooks ? 'bg-black/15' : 'bg-blue-50' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
                             </svg>
@@ -200,7 +227,7 @@
 
                 @if ($isAdmin)
                     <a href="{{ route('admin.borrow.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeBorrowStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBorrowStatus ? 'bg-white/15' : 'bg-amber-50' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBorrowStatus ? 'bg-black/15' : 'bg-amber-50' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
@@ -212,7 +239,7 @@
                     </a>
                 @else
                     <a href="{{ route('borrow.user.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeBorrowStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBorrowStatus ? 'bg-white/15' : 'bg-amber-50' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeBorrowStatus ? 'bg-black/15' : 'bg-amber-50' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
@@ -225,7 +252,7 @@
                 @endif
 
                 <a href="{{ route('profile') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeProfile ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeProfile ? 'bg-white/15' : 'bg-slate-50' }}">
+                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeProfile ? 'bg-black/15' : 'bg-slate-50' }}">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>

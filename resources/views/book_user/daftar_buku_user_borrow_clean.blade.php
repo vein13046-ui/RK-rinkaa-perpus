@@ -52,8 +52,8 @@
                         @endif
 
                         <div class="absolute right-2.5 top-2.5">
-                            <span class="inline-flex items-center rounded-full bg-white/90 px-2 py-1 text-[10px] font-bold text-slate-700 shadow-sm">
-                                Stok {{ $book->stok }}
+                            <span class="inline-flex items-center rounded-full bg-black/95 px-2.5 py-1 text-[10px] font-bold text-slate-800 shadow-sm backdrop-blur-sm">
+                                Stok: {{ $book->stok }}
                             </span>
                         </div>
 
@@ -73,7 +73,7 @@
                         <p class="mt-2 text-xs text-slate-500">{{ $book->penerbit ?? 'Penerbit tidak tersedia' }} - {{ $book->tahun_terbit }}</p>
 
                         <div class="mt-3 flex items-center justify-between gap-2">
-                            <span class="text-[10px] font-medium text-slate-400">Stok {{ $book->stok }}</span>
+                            <span class="text-[10px] font-semibold text-slate-600">Stok: {{ $book->stok }}</span>
 
                             @if ($activeBorrow && $activeBorrow->status === 'approved')
                                 <button

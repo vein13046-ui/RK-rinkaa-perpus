@@ -12,17 +12,21 @@ class Book extends Model
 
     protected $fillable = [
         'judul',
-        'penulis', 
+        'penulis',
         'penerbit',
         'kategori',
         'tahun_terbit',
         'isbn',
         'stok',
         'cover',
+        'kode_buku',
+        'profile_path',
+        'book_profile',
     ];
 
     protected $casts = [
         'tahun_terbit' => 'integer',
+        'book_profile' => 'array',
     ];
 
     public function borrowRequests(): HasMany

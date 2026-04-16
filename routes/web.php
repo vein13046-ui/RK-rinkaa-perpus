@@ -43,6 +43,8 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::get('/books', [\App\Http\Controllers\BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [\App\Http\Controllers\BookController::class, 'create'])->name('books.create');
     Route::post('/books', [\App\Http\Controllers\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/profile', [\App\Http\Controllers\BookController::class, 'showProfile'])->name('books.profile');
+    Route::get('/books/{book}/profile/download', [\App\Http\Controllers\BookController::class, 'downloadProfile'])->name('books.profile.download');
     Route::delete('/books/{book}', [\App\Http\Controllers\BookController::class, 'destroy'])->name('books.destroy');
     Route::get('/peminjaman', [BorrowController::class, 'indexAdmin'])->name('borrow.index');
     Route::post('/peminjaman/{borrowRequest}/approve', [BorrowController::class, 'approve'])->name('borrow.approve');

@@ -40,6 +40,7 @@ Manajemen inventaris koleksi perpustakaan RinKa Perpus.
                     <tr class="border-b border-slate-200">
                         <th class="pb-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Info Buku</th>
                         <th class="px-6 pb-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Detail & Kategori</th>
+                        <th class="px-6 pb-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Kode</th>
                         <th class="px-6 pb-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Tahun</th>
                         <th class="px-6 pb-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-center">Stok</th>
                         <th class="pb-5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Opsi</th>
@@ -82,30 +83,28 @@ Manajemen inventaris koleksi perpustakaan RinKa Perpus.
                             </td>
 
                             <td class="px-6 py-8 text-center align-top pt-10">
-                                <span class="text-sm font-bold text-slate-700 tracking-tighter">{{ $book->tahun_terbit }}</span>
+                                <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 text-slate-700 rounded-md font-mono text-xs font-bold">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"></path>
+                                    </svg>
+                                    {{ $book->kode_buku }}
+                                </div>
                             </td>
 
-                            <td class="px-6 py-8 align-top pt-10">
-                                <div class="flex flex-col items-center gap-1">
-                                    <span class="text-base font-black {{ $book->stok > 0 ? 'text-slate-900' : 'text-rose-600' }}">
-                                        {{ $book->stok }}
-                                    </span>
-                                    <div class="flex items-center gap-1.5">
-                                        <span class="h-1 w-1 rounded-full {{ $book->stok > 0 ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
-                                        <span class="text-[9px] font-bold uppercase tracking-[0.15em] text-slate-400">
-                                            {{ $book->stok > 0 ? 'In Stock' : 'Empty' }}
-                                        </span>
-                                    </div>
-                                </div>
+                            <td class="px-6 py-8 text-center align-top pt-10">
+                                <span class="text-sm font-bold text-slate-700 tracking-tighter">{{ $book->tahun_terbit }}</span>
                             </td>
 
                             <td class="py-8 text-right align-top pt-10">
                                 <div class="flex items-center justify-end gap-6">
+                                    <a href="{{ route('admin.books.profile', $book) }}" class="text-[10px] font-black uppercase tracking-widest text-blue-500 hover:text-blue-700 transition-all">
+                                        Profile
+                                    </a>
                                     <a href="#" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all">
                                         Edit
                                     </a>
-                                    
-                                    <form action="#" method="POST" onsubmit="return confirm('Hapus data buku?');" class="inline">
+
+                                    <form action="{{ route('admin.books.destroy', $book) }}" method="POST" onsubmit="return confirm('Hapus data buku?');" class="inline">
                                         @csrf @method('DELETE')
                                         <button type="submit" class="text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-rose-600 transition-all">
                                             Hapus
@@ -116,7 +115,7 @@ Manajemen inventaris koleksi perpustakaan RinKa Perpus.
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="py-32 text-center">
+                            <td colspan="6" class="py-32 text-center">
                                 <div class="space-y-4">
                                     <p class="text-slate-300 font-bold text-xl tracking-tight uppercase">Database Kosong</p>
                                     <a href="{{ route('admin.books.create') }}" class="text-blue-600 text-xs font-black uppercase tracking-widest hover:underline decoration-2 underline-offset-8 transition-all">

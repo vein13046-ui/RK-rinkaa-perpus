@@ -2,8 +2,8 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -13,21 +13,35 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('books', function (Blueprint $table) {
-            $table->string('kode_buku')->nullable()->after('isbn');
-            $table->string('profile_path')->nullable()->after('kode_buku');
-            $table->json('book_profile')->nullable()->after('profile_path');
+            if (! Schema::hasColumn('books', 'kode_buku')) {
+                $table->string('kode_buku')->nullable()->after('isbn');
+            }
+
+            if (! Schema::hasColumn('books', 'profile_path')) {
+                $table->string('profile_path')->nullable()->after('kode_buku');
+            }
+
+            if (! Schema::hasColumn('books', 'book_profile')) {
+                $table->json('book_profile')->nullable()->after('profile_path');
+            }
         });
 
-        // Generate kode_buku for existing books
-        $books = DB::table('books')->get();
-        foreach ($books as $book) {
-            $kode = 'BK' . str_pad($book->id, 4, '0', STR_PAD_LEFT);
-            DB::table('books')->where('id', $book->id)->update(['kode_buku' => $kode]);
+        if (Schema::hasColumn('books', 'kode_buku')) {
+            $books = DB::table('books')
+                ->whereNull('kode_buku')
+                ->orderBy('id')
+                ->get();
+
+            foreach ($books as $book) {
+                $kodeBuku = 'BK' . str_pad((string) $book->id, 6, '0', STR_PAD_LEFT);
+
+                DB::table('books')
+                    ->where('id', $book->id)
+                    ->update(['kode_buku' => $kodeBuku]);
+            }
         }
 
-        Schema::table('books', function (Blueprint $table) {
-            $table->string('kode_buku')->unique()->change();
-        });
+        // Skip column forcing to avoid DBAL dependency on deploy environments.
     }
 
     /**
@@ -35,8 +49,24 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->dropColumn(['kode_buku', 'profile_path', 'book_profile']);
-        });
+        $columns = [];
+
+        if (Schema::hasColumn('books', 'book_profile')) {
+            $columns[] = 'book_profile';
+        }
+
+        if (Schema::hasColumn('books', 'profile_path')) {
+            $columns[] = 'profile_path';
+        }
+
+        if (Schema::hasColumn('books', 'kode_buku')) {
+            $columns[] = 'kode_buku';
+        }
+
+        if (! empty($columns)) {
+            Schema::table('books', function (Blueprint $table) use ($columns) {
+                $table->dropColumn($columns);
+            });
+        }
     }
 };

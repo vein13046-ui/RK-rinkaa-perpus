@@ -78,30 +78,26 @@
                         </thead>
                         <tbody class="divide-y divide-slate-100 bg-white">
                             @forelse ($books as $book)
-                                <tr class="search-row hover:bg-slate-50/80 transition" data-search-key="{{ mb_strtolower($book->judul.' '.$book->penulis.' '.$book->kategori.' '.$book->penerbit) }}">
+                                <tr class="search-row hover:bg-slate-50/80 transition" data-search-key="{{ mb_strtolower($book->kode_buku.' '.$book->isbn.' '.$book->judul.' '.$book->penulis.' '.$book->kategori.' '.$book->penerbit) }}">
                                     <td class="px-5 py-5 align-top">
                                         <div class="w-16 h-24 rounded-2xl overflow-hidden bg-slate-100 shadow-sm ring-1 ring-slate-100">
-                                            @if ($book->cover)
-                                                <img src="{{ Storage::url($book->cover) }}" alt="{{ $book->judul }}" class="w-full h-full object-cover">
-                                            @else
-                                                <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                                    </svg>
-                                                </div>
-                                            @endif
+                                            <img src="{{ $book->cover_url }}" alt="{{ $book->judul }}" class="w-full h-full object-cover">
                                         </div>
                                     </td>
 
                                     <td class="px-5 py-5 align-top">
                                         <div class="max-w-xl">
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-600">{{ $book->kode_buku }}</span>
+                                                @if ($book->isbn)
+                                                    <span class="inline-flex rounded-full bg-violet-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-violet-700">{{ $book->isbn }}</span>
+                                                @endif
+                                            </div>
                                             <h4 class="text-lg font-bold text-slate-900 leading-tight">{{ $book->judul }}</h4>
                                             <p class="mt-2 text-sm font-medium text-slate-600">{{ $book->penulis }}</p>
+                                            <p class="mt-2 text-sm text-slate-500">{{ $book->penerbit ?: 'Penerbit tidak tersedia' }} • {{ $book->tahun_terbit }}</p>
                                             <div class="mt-3 flex flex-wrap items-center gap-2">
                                                 <span class="inline-flex rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-blue-700">{{ $book->kategori }}</span>
-                                                @if ($book->penerbit)
-                                                    <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-600">{{ $book->penerbit }}</span>
-                                                @endif
                                             </div>
                                         </div>
                                     </td>

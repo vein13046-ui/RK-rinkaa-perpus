@@ -131,15 +131,7 @@
                     @forelse ($featuredBooks as $book)
                         <article class="group flex gap-3 rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5 transition hover:border-blue-100 hover:bg-white hover:shadow-md">
                             <div class="h-28 w-20 shrink-0 overflow-hidden rounded-xl bg-white shadow-sm">
-                                @if ($book->cover)
-                                    <img src="{{ Storage::url($book->cover) }}" alt="{{ $book->judul }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-                                @else
-                                    <div class="flex h-full w-full items-center justify-center bg-slate-100 text-slate-400">
-                                        <svg class="h-7 w-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-                                        </svg>
-                                    </div>
-                                @endif
+                                <img src="{{ $book->cover_url }}" alt="{{ $book->judul }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
                             </div>
 
                             <div class="min-w-0">

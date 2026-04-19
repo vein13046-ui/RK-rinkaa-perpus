@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 720" role="img" aria-labelledby="title desc">
+  <title id="title">Default Book Cover</title>
+  <desc id="desc">Placeholder cover for books without an uploaded image.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="55%" stop-color="#1d4ed8"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f8fafc" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.9"/>
+    </linearGradient>
+  </defs>
+  <rect width="480" height="720" rx="40" fill="url(#bg)"/>
+  <circle cx="396" cy="110" r="82" fill="#ffffff" fill-opacity="0.08"/>
+  <circle cx="90" cy="140" r="54" fill="#ffffff" fill-opacity="0.06"/>
+  <rect x="74" y="110" width="332" height="500" rx="28" fill="#0b1220" fill-opacity="0.4" stroke="#ffffff" stroke-opacity="0.18"/>
+  <path d="M134 208c0-22 18-40 40-40h132c22 0 40 18 40 40v246c0 22-18 40-40 40H174c-22 0-40-18-40-40V208z" fill="#e2e8f0" fill-opacity="0.1" stroke="url(#accent)" stroke-opacity="0.75" stroke-width="3"/>
+  <path d="M174 186h132c22 0 40 18 40 40v246c0 22-18 40-40 40H174c-22 0-40-18-40-40V226c0-22 18-40 40-40z" fill="#ffffff" fill-opacity="0.08"/>
+  <path d="M202 248h176M202 292h176M202 336h140" stroke="#f8fafc" stroke-opacity="0.7" stroke-width="14" stroke-linecap="round"/>
+  <path d="M202 398h96" stroke="#cbd5e1" stroke-opacity="0.9" stroke-width="10" stroke-linecap="round"/>
+  <path d="M156 500h168" stroke="#f8fafc" stroke-opacity="0.55" stroke-width="12" stroke-linecap="round"/>
+  <path d="M160 538h120" stroke="#f8fafc" stroke-opacity="0.35" stroke-width="10" stroke-linecap="round"/>
+  <text x="240" y="612" text-anchor="middle" fill="#f8fafc" font-family="Arial, sans-serif" font-size="28" font-weight="700" letter-spacing="4">RINKA PERPUS</text>
+</svg>

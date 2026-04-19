@@ -1,0 +1,22 @@
+{
+    "id": 11,
+    "kode_buku": "BK000011",
+    "judul": "setan",
+    "penulis": "bintang",
+    "penerbit": null,
+    "kategori": "horor",
+    "tahun_terbit": 1901,
+    "isbn": null,
+    "stok": "5",
+    "cover": "cover_buku\/CRoQIPLsRarBJtDSTxBhMco57lhxhKa7aZtai9cV.jpg",
+    "created_at": "2026-04-17T03:14:33.000000Z",
+    "updated_at": "2026-04-17T03:14:33.000000Z",
+    "status": "active",
+    "profile_version": "1.0",
+    "metadata": {
+        "added_by": "Sarin",
+        "added_at": "2026-04-17T03:14:33.545531Z",
+        "device_info": "Mozilla\/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit\/537.36 (KHTML, like Gecko) Chrome\/145.0.0.0 Safari\/537.36 Edg\/145.0.0.0",
+        "ip_address": "127.0.0.1"
+    }
+}

@@ -21,6 +21,7 @@ class BorrowController extends Controller
 
         $borrows = BorrowRequest::with('book')
             ->where('user_id', Auth::id())
+            ->whereNotIn('status', ['returned'])
             ->latest()
             ->paginate(10);
 
@@ -268,5 +269,36 @@ class BorrowController extends Controller
         ]);
 
         return back()->with('success', 'Permintaan peminjaman ditolak.');
+    }
+
+    public function history()
+    {
+        $user = Auth::user();
+        $query = BorrowRequest::with('book')
+            ->where('status', 'returned')
+            ->latest();
+
+        if ($user->role !== 'admin') {
+            $query->where('user_id', $user->id);
+        }
+
+        $histories = $query->take(4)->get();
+
+        return view('borrow.history', compact('histories'));
+    }
+
+    public function deleteHistory(BorrowRequest $borrowRequest)
+    {
+        if ($borrowRequest->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if ($borrowRequest->status !== 'returned') {
+            return back()->withErrors(['error' => 'Hanya riwayat yang sudah dikembalikan yang bisa dihapus.']);
+        }
+
+        $borrowRequest->delete();
+
+        return back()->with('success', 'Riwayat peminjaman berhasil dihapus.');
     }
 }

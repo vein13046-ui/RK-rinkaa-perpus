@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\BorrowRequest;
+use App\Models\SupportThread;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -39,6 +40,7 @@ class AppServiceProvider extends ServiceProvider
                     ->get();
 
                 $borrowNotificationCount = BorrowRequest::whereIn('status', ['pending', 'return_pending'])->count();
+                $supportUnreadCount = SupportThread::sum('unread_admin_count');
             } else {
                 $borrowNotifications = BorrowRequest::with('book')
                     ->where('user_id', $user->id)
@@ -50,11 +52,13 @@ class AppServiceProvider extends ServiceProvider
                 $borrowNotificationCount = BorrowRequest::where('user_id', $user->id)
                     ->whereIn('status', ['pending', 'approved', 'picked_up', 'return_pending'])
                     ->count();
+                $supportUnreadCount = SupportThread::where('user_id', $user->id)->value('unread_user_count') ?? 0;
             }
 
             $view->with([
                 'borrowNotifications' => $borrowNotifications,
                 'borrowNotificationCount' => $borrowNotificationCount,
+                'supportUnreadCount' => $supportUnreadCount ?? 0,
             ]);
         });
     }

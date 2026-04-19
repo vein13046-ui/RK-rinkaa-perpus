@@ -10,6 +10,56 @@ use App\Models\Book;
 
 class BookController extends Controller
 {
+    private function buildProfileData(Book $book): array
+    {
+        return [
+            'id' => $book->id,
+            'kode_buku' => $book->kode_buku,
+            'judul' => $book->judul,
+            'penulis' => $book->penulis,
+            'penerbit' => $book->penerbit,
+            'kategori' => $book->kategori,
+            'tahun_terbit' => $book->tahun_terbit,
+            'isbn' => $book->isbn,
+            'stok' => $book->stok,
+            'cover' => $book->cover,
+            'created_at' => $book->created_at,
+            'updated_at' => $book->updated_at,
+            'status' => 'active',
+            'profile_version' => '1.0',
+            'metadata' => [
+                'added_by' => auth()->user()->name ?? 'System',
+                'added_at' => $book->created_at ? $book->created_at->toISOString() : now()->toISOString(),
+                'updated_at' => now()->toISOString(),
+                'device_info' => request()->userAgent(),
+                'ip_address' => request()->ip(),
+            ],
+        ];
+    }
+
+    private function syncBookProfile(Book $book): void
+    {
+        if (! $book->profile_path) {
+            return;
+        }
+
+        $profileData = $this->buildProfileData($book);
+        $fullProfilePath = storage_path('app/public/' . $book->profile_path);
+
+        if (!file_exists($fullProfilePath)) {
+            mkdir($fullProfilePath, 0755, true);
+        }
+
+        file_put_contents(
+            $fullProfilePath . '/profile.json',
+            json_encode($profileData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)
+        );
+
+        $book->updateQuietly([
+            'book_profile' => json_encode($profileData),
+        ]);
+    }
+
     public function index()
     {
         $books = Book::latest()->paginate(15);
@@ -101,47 +151,59 @@ class BookController extends Controller
         // Create profile folder path
         $profilePath = 'book_profiles/' . $kodeBuku;
 
-        // Create comprehensive book profile data
-        $profileData = [
-            'id' => $book->id,
-            'kode_buku' => $kodeBuku,
-            'judul' => $book->judul,
-            'penulis' => $book->penulis,
-            'penerbit' => $book->penerbit,
-            'kategori' => $book->kategori,
-            'tahun_terbit' => $book->tahun_terbit,
-            'isbn' => $book->isbn,
-            'stok' => $book->stok,
-            'cover' => $book->cover,
-            'created_at' => $book->created_at,
-            'updated_at' => $book->updated_at,
-            'status' => 'active',
-            'profile_version' => '1.0',
-            'metadata' => [
-                'added_by' => auth()->user()->name ?? 'System',
-                'added_at' => now()->toISOString(),
-                'device_info' => request()->userAgent(),
-                'ip_address' => request()->ip()
-            ]
-        ];
-
         // Create profile folder in storage
         $fullProfilePath = storage_path('app/public/' . $profilePath);
         if (!file_exists($fullProfilePath)) {
             mkdir($fullProfilePath, 0755, true);
         }
 
-        // Save profile data as JSON file
-        $profileFilePath = $fullProfilePath . '/profile.json';
-        file_put_contents($profileFilePath, json_encode($profileData, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
-
-        // Update book with profile data
         $book->update([
             'profile_path' => $profilePath,
-            'book_profile' => json_encode($profileData)
         ]);
 
+        $this->syncBookProfile($book->refresh());
+
         return redirect()->route('admin.books.index')->with('success', "Buku berhasil ditambahkan dengan kode: {$kodeBuku}!");
+    }
+
+    public function edit(Book $book)
+    {
+        return view('books_admin.edit_buku_clean', compact('book'));
+    }
+
+    public function update(Request $request, Book $book)
+    {
+        $request->validate([
+            'judul' => 'required|string|max:255',
+            'penulis' => 'required|string|max:255',
+            'kategori' => 'required|string|max:100',
+            'tahun_terbit' => 'required|integer|min:1901|max:'.(date('Y')+1),
+            'stok' => 'required|integer|min:0|max:1000',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'penerbit' => 'nullable|string|max:255',
+            'isbn' => 'nullable|string|max:20|unique:books,isbn,' . $book->id,
+        ]);
+
+        if ($request->hasFile('foto')) {
+            if ($book->cover) {
+                Storage::disk('public')->delete($book->cover);
+            }
+
+            $book->cover = $request->file('foto')->store('cover_buku', 'public');
+        }
+
+        $book->judul = $request->judul;
+        $book->penulis = $request->penulis;
+        $book->kategori = $request->kategori;
+        $book->tahun_terbit = $request->tahun_terbit;
+        $book->stok = $request->stok;
+        $book->penerbit = $request->penerbit;
+        $book->isbn = $request->isbn;
+        $book->save();
+
+        $this->syncBookProfile($book);
+
+        return redirect()->route('admin.books.index')->with('success', 'Data buku berhasil diperbarui.');
     }
 
     public function showProfile(Book $book)

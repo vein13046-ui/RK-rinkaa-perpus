@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\PublicStorageController;
+use App\Http\Controllers\SupportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -32,8 +33,16 @@ Route::middleware('auth')->group(function () {
     Route::post('/peminjaman/{borrowRequest}/pickup', [BorrowController::class, 'pickup'])->name('borrow.pickup');
     Route::get('/peminjaman/{borrowRequest}/pickup-data', [BorrowController::class, 'pickupData'])->name('borrow.pickup.data');
     Route::post('/peminjaman/{borrowRequest}/request-return', [BorrowController::class, 'requestReturn'])->name('borrow.request-return');
+    Route::get('/riwayat-peminjaman', [BorrowController::class, 'history'])->name('borrow.history');
+    Route::delete('/riwayat-peminjaman/{borrowRequest}', [BorrowController::class, 'deleteHistory'])->name('borrow.history.delete');
 
     Route::get('/profile', [AuthController::class, 'profile'])->name('profile');
+    Route::get('/customer-service', [SupportController::class, 'index'])->name('support.index');
+    Route::post('/customer-service', [SupportController::class, 'store'])->name('support.store');
+    Route::post('/customer-service/clear', [SupportController::class, 'clear'])->name('support.clear');
+    Route::get('/info-aplikasi', function () {
+        return view('app_info');
+    })->name('app.info');
     Route::post('/profile/photo', [AuthController::class, 'updateProfilePhoto'])->name('profile.update');
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
@@ -43,6 +52,8 @@ Route::middleware(['auth', 'admin'])->name('admin.')->prefix('admin')->group(fun
     Route::get('/books', [\App\Http\Controllers\BookController::class, 'index'])->name('books.index');
     Route::get('/books/create', [\App\Http\Controllers\BookController::class, 'create'])->name('books.create');
     Route::post('/books', [\App\Http\Controllers\BookController::class, 'store'])->name('books.store');
+    Route::get('/books/{book}/edit', [\App\Http\Controllers\BookController::class, 'edit'])->name('books.edit');
+    Route::put('/books/{book}', [\App\Http\Controllers\BookController::class, 'update'])->name('books.update');
     Route::get('/books/{book}/profile', [\App\Http\Controllers\BookController::class, 'showProfile'])->name('books.profile');
     Route::get('/books/{book}/profile/download', [\App\Http\Controllers\BookController::class, 'downloadProfile'])->name('books.profile.download');
     Route::delete('/books/{book}', [\App\Http\Controllers\BookController::class, 'destroy'])->name('books.destroy');

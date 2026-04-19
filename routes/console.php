@@ -12,3 +12,5 @@ Artisan::command('inspire', function () {
 Schedule::call(function () {
     BorrowRequest::expireOverduePickups();
 })->everyMinute();
+
+Schedule::command('borrow:history-cleanup')->hourly();

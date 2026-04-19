@@ -11,19 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->string('kategori');
-            $table->string('cover')->nullable();
+        Schema::table('borrow_requests', function (Blueprint $table) {
+            $table->softDeletes();
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void 
+    public function down(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->dropColumn(['kategori', 'cover']);
+        Schema::table('borrow_requests', function (Blueprint $table) {
+            $table->dropSoftDeletes();
         });
     }
 };

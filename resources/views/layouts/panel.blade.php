@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RinKa Perpus - @yield('page-title', 'Dashboard')</title>
+    <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <script>
         (function () {
             try {
@@ -192,9 +193,11 @@
         $activeUsers = request()->routeIs('admin.users.*');
         $activeUserBooks = request()->routeIs('user.books');
         $activeBorrowStatus = request()->routeIs('borrow.user.index') || request()->routeIs('admin.borrow.*');
-        $activeProfile = request()->routeIs('profile');
+        $activeHistory = request()->routeIs('borrow.history');
+        $activeSupport = request()->routeIs('support.*');
         $borrowNotificationCount = $borrowNotificationCount ?? 0;
         $borrowNotifications = $borrowNotifications ?? collect();
+        $supportUnreadCount = $supportUnreadCount ?? 0;
     @endphp
 
     <div class="min-h-screen flex">
@@ -205,7 +208,7 @@
                         RK
                     </div>
                     <div>
-                        <p class="text-sm uppercase tracking-[0.24em] text-slate-400 font-semibold">Library Suite</p>
+                        <p class="text-sm uppercase  tracking-[0.24em] text-slate-400 font-semibold">Library Suite</p>
                         <h1 class="text-xl font-extrabold text-slate-900 leading-tight">RinKa <span class="text-blue-600">Perpus</span></h1>
                     </div>
                 </a>
@@ -263,6 +266,25 @@
                             <span class="ml-auto inline-flex items-center rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-bold text-rose-600">{{ number_format($borrowNotificationCount) }}</span>
                         @endif
                     </a>
+                    <a href="{{ route('borrow.history') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeHistory ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeHistory ? 'bg-black/15' : 'bg-slate-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Riwayat Peminjaman</span>
+                    </a>
+                    <a href="{{ route('support.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeSupport ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="relative w-10 h-10 rounded-xl flex items-center justify-center {{ $activeSupport ? 'bg-black/15' : 'bg-cyan-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8h0a8 8 0 018 8v2a4 4 0 01-4 4h-1l-2 3v-3H8a4 4 0 01-4-4v-2z"></path>
+                            </svg>
+                            @if ($supportUnreadCount > 0)
+                                <span class="absolute -top-1 -right-1 inline-flex min-w-5 h-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white">{{ $supportUnreadCount > 9 ? '9+' : $supportUnreadCount }}</span>
+                            @endif
+                        </span>
+                        <span class="font-semibold">Customer Service</span>
+                    </a>
                     <a href="{{ route('admin.users.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeUsers ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
                         <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeUsers ? 'bg-black/15' : 'bg-violet-50' }}">
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,16 +305,26 @@
                             <span class="ml-auto inline-flex items-center rounded-full bg-rose-100 px-2.5 py-1 text-[11px] font-bold text-rose-600">{{ number_format($borrowNotificationCount) }}</span>
                         @endif
                     </a>
+                    <a href="{{ route('borrow.history') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeHistory ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeHistory ? 'bg-black/15' : 'bg-slate-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </span>
+                        <span class="font-semibold">Riwayat Peminjaman</span>
+                    </a>
+                    <a href="{{ route('support.index') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeSupport ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="relative w-10 h-10 rounded-xl flex items-center justify-center {{ $activeSupport ? 'bg-black/15' : 'bg-cyan-50' }}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8h0a8 8 0 018 8v2a4 4 0 01-4 4h-1l-2 3v-3H8a4 4 0 01-4-4v-2z"></path>
+                            </svg>
+                            @if ($supportUnreadCount > 0)
+                                <span class="absolute -top-1 -right-1 inline-flex min-w-5 h-5 items-center justify-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white ring-2 ring-white">{{ $supportUnreadCount > 9 ? '9+' : $supportUnreadCount }}</span>
+                            @endif
+                        </span>
+                        <span class="font-semibold">Customer Service</span>
+                    </a>
                 @endif
-
-                <a href="{{ route('profile') }}" class="group flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ $activeProfile ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-50 hover:text-blue-700' }}">
-                    <span class="w-10 h-10 rounded-xl flex items-center justify-center {{ $activeProfile ? 'bg-black/15' : 'bg-slate-50' }}">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
-                        </svg>
-                    </span>
-                    <span class="font-semibold">Profil</span>
-                </a>
             </nav>
 
             <div class="px-5 pb-6">
@@ -331,11 +363,6 @@
                     </div>
 
                     <div class="flex shrink-0 items-center gap-2 sm:gap-3">
-                        <div class="hidden xl:flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
-                            <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                            <span class="text-sm font-medium text-slate-600">{{ now()->translatedFormat('l, d F Y') }}</span>
-                        </div>
-
                         <button id="themeToggle" type="button" class="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:border-blue-200 hover:shadow-md" aria-label="Aktifkan mode gelap" title="Mode gelap">
                             <svg id="themeIconMoon" class="h-5 w-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3a7 7 0 009.79 9.79z"></path>
@@ -415,6 +442,18 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                                     </svg>
                                     Buka Profil
+                                </a>
+                                <a href="{{ route('app.info') }}" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-blue-50 hover:text-blue-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 20a8 8 0 100-16 8 8 0 000 16z"></path>
+                                    </svg>
+                                    Info Aplikasi
+                                </a>
+                                <a href="{{ route('support.index') }}" class="w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-cyan-50 hover:text-cyan-700">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 12a8 8 0 018-8h0a8 8 0 018 8v2a4 4 0 01-4 4h-1l-2 3v-3H8a4 4 0 01-4-4v-2z"></path>
+                                    </svg>
+                                    Customer Service
                                 </a>
                                 <form method="POST" action="{{ route('logout') }}" class="mt-1 border-t border-slate-100">
                                     @csrf
@@ -512,6 +551,183 @@
                 dropdown.classList.remove('opacity-100', 'scale-100');
             });
         }
+
+        function initializeSearchInputs() {
+            document.querySelectorAll('.search-input').forEach(function (input) {
+                var targetSelector = input.dataset.searchTarget;
+                var rowsSelector = input.dataset.searchRows;
+                if (!targetSelector || !rowsSelector) {
+                    return;
+                }
+
+                var target = document.querySelector(targetSelector);
+                var wrapper = input.closest('.relative') || input.parentElement;
+                var popup = wrapper?.querySelector('.search-popup');
+                var popupOverlay = wrapper?.querySelector('.search-popup-overlay');
+                var closeButton = wrapper?.querySelector('.search-close');
+                var count = popup?.querySelector('.search-count');
+                var status = wrapper?.querySelector('.search-status');
+                var button = wrapper?.querySelector('.search-button') || input.nextElementSibling;
+                var hidePopupTimer = null;
+
+                function buildPopupResults(matches) {
+                    if (!popup) {
+                        return;
+                    }
+
+                    var body = popup.querySelector('.search-popup-body');
+                    var head = popup.querySelector('.search-popup-head');
+                    if (!body) {
+                        return;
+                    }
+
+                    body.innerHTML = '';
+                    if (head) {
+                        var targetHead = target.querySelector('thead');
+                        if (targetHead) {
+                            head.innerHTML = targetHead.innerHTML;
+                        } else {
+                            head.innerHTML = '<tr><th class="px-3 py-3 text-left text-xs uppercase tracking-[0.18em] text-slate-400">Hasil</th></tr>';
+                        }
+                    }
+
+                    if (matches.length === 0) {
+                        body.innerHTML = '<tr><td class="px-3 py-3 text-sm text-slate-500">Tidak ada hasil yang cocok.</td></tr>';
+                        return;
+                    }
+
+                    matches.forEach(function (row) {
+                        if (row.tagName && row.tagName.toLowerCase() === 'tr') {
+                            var clone = row.cloneNode(true);
+                            clone.style.display = '';
+                            body.appendChild(clone);
+                        } else {
+                            var text = row.textContent.trim().replace(/\s+/g, ' ');
+                            var tr = document.createElement('tr');
+                            var td = document.createElement('td');
+                            td.setAttribute('colspan', '100');
+                            td.className = 'px-3 py-3 text-sm text-slate-700';
+                            td.textContent = text;
+                            tr.appendChild(td);
+                            body.appendChild(tr);
+                        }
+                    });
+                }
+
+                function hidePopup() {
+                    if (hidePopupTimer) {
+                        clearTimeout(hidePopupTimer);
+                        hidePopupTimer = null;
+                    }
+
+                    if (popup) {
+                        popup.classList.add('opacity-0', 'scale-95');
+                        popup.classList.remove('opacity-100', 'scale-100');
+                        hidePopupTimer = setTimeout(function () {
+                            popup.classList.add('hidden');
+                            hidePopupTimer = null;
+                        }, 250);
+                    }
+                    if (popupOverlay) {
+                        popupOverlay.classList.add('hidden');
+                    }
+                }
+
+                function showPopup() {
+                    if (hidePopupTimer) {
+                        clearTimeout(hidePopupTimer);
+                        hidePopupTimer = null;
+                    }
+
+                    if (popupOverlay) {
+                        popupOverlay.classList.remove('hidden');
+                    }
+                    if (popup) {
+                        popup.classList.remove('hidden');
+                        requestAnimationFrame(function () {
+                            popup.classList.remove('opacity-0', 'scale-95');
+                            popup.classList.add('opacity-100', 'scale-100');
+                        });
+                    }
+                }
+
+                function updateSearch(openPopup) {
+                    var query = input.value.trim().toLowerCase();
+                    var matchedRows = [];
+                    if (!target) {
+                        return;
+                    }
+
+                    target.querySelectorAll(rowsSelector).forEach(function (row) {
+                        var key = (row.dataset.searchKey || '').toLowerCase();
+                        var visible = !query || key.indexOf(query) !== -1;
+                        row.style.display = visible ? '' : 'none';
+                        if (visible) {
+                            matchedRows.push(row);
+                        }
+                    });
+
+                    if (status) {
+                        if (query && matchedRows.length === 0) {
+                            status.textContent = 'Data tidak ditemukan untuk "' + query + '". Mohon cek kata kunci lagi.';
+                            status.classList.remove('hidden');
+                        } else {
+                            status.classList.add('hidden');
+                        }
+                    }
+
+                    if (popup && count) {
+                        if (!query || !openPopup) {
+                            hidePopup();
+                        } else {
+                            showPopup();
+                            count.textContent = matchedRows.length > 0
+                                ? 'Menampilkan ' + matchedRows.length + ' hasil untuk "' + query + '"'
+                                : 'Tidak ada hasil untuk "' + query + '"';
+                            buildPopupResults(matchedRows);
+                        }
+                    }
+                }
+
+                input.addEventListener('input', function () {
+                    updateSearch(true);
+                });
+
+                input.addEventListener('keydown', function (event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        updateSearch(true);
+                    }
+                });
+
+                if (button) {
+                    button.addEventListener('click', function () {
+                        updateSearch(true);
+                        input.focus();
+                    });
+                }
+
+                if (popupOverlay) {
+                    popupOverlay.addEventListener('click', function () {
+                        hidePopup();
+                    });
+                }
+
+                if (closeButton) {
+                    closeButton.addEventListener('click', function () {
+                        hidePopup();
+                    });
+                }
+
+                document.addEventListener('click', function (event) {
+                    if (popup && !input.contains(event.target) && !popup.contains(event.target) && !button?.contains(event.target) && !popupOverlay?.contains(event.target)) {
+                        hidePopup();
+                    }
+                });
+            });
+        }
+
+        initializeSearchInputs();
     </script>
     @stack('scripts')
 </body>

@@ -1,10 +1,41 @@
+@php
+    $requestUserAgent = strtolower((string) request()->userAgent());
+    $secChUaMobile = strtolower((string) request()->header('sec-ch-ua-mobile'));
+    $isAndroidDevice = str_contains($requestUserAgent, 'android');
+    $isIosDevice = str_contains($requestUserAgent, 'iphone') || str_contains($requestUserAgent, 'ipad') || str_contains($requestUserAgent, 'ipod');
+    $isMobileDevice = $secChUaMobile === '?1'
+        || $isAndroidDevice
+        || $isIosDevice
+        || str_contains($requestUserAgent, 'mobile');
+@endphp
+
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="{{ $isMobileDevice ? 'device-mobile-server' : 'device-desktop-server' }} {{ $isAndroidDevice ? 'device-android-server' : '' }} {{ $isIosDevice ? 'device-ios-server' : '' }}">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>RinKa Perpus - @yield('page-title', 'Dashboard')</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+    <script>
+        (function () {
+            const ua = navigator.userAgent || '';
+            const isAndroid = /Android/i.test(ua);
+            const isIos = /(iPhone|iPad|iPod)/i.test(ua);
+            const isMobileUa = /(Mobi|Mobile|Android|iPhone|iPad|iPod|Opera Mini|IEMobile)/i.test(ua);
+            const isTouchDevice = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
+            const minViewportSide = Math.min(window.innerWidth || 0, window.innerHeight || 0);
+            const isCompactViewport = minViewportSide > 0 && minViewportSide <= 1024;
+            const isMobile = isMobileUa || (isTouchDevice && isCompactViewport);
+
+            const root = document.documentElement;
+            root.classList.toggle('device-mobile-active', isMobile);
+            root.classList.toggle('device-desktop-active', !isMobile);
+            root.classList.toggle('device-android-active', isAndroid);
+            root.classList.toggle('device-ios-active', isIos);
+            root.setAttribute('data-device-mobile', isMobile ? '1' : '0');
+            root.setAttribute('data-device-platform', isAndroid ? 'android' : (isIos ? 'ios' : 'desktop'));
+        })();
+    </script>
     <script>
         (function () {
             try {
@@ -182,6 +213,34 @@
         html.theme-dark ::-webkit-scrollbar-thumb {
             background: #3a4a61;
         }
+        .mobile-nav-shell {
+            display: none;
+        }
+        html.device-mobile-server .mobile-nav-shell,
+        html.device-mobile-active .mobile-nav-shell {
+            display: block;
+            position: fixed;
+            left: 0.75rem;
+            right: 0.75rem;
+            bottom: max(0.65rem, env(safe-area-inset-bottom));
+            z-index: 60;
+        }
+        html.device-mobile-server main,
+        html.device-mobile-active main {
+            padding-bottom: 6.8rem !important;
+        }
+        .mobile-nav-link {
+            min-height: 3.25rem;
+        }
+        @media (min-width: 1024px) {
+            .mobile-nav-shell {
+                display: none !important;
+            }
+            html.device-mobile-server main,
+            html.device-mobile-active main {
+                padding-bottom: 2rem !important;
+            }
+        }
     </style>
 </head>
 <body class="text-slate-700 antialiased min-h-screen">
@@ -195,6 +254,7 @@
         $activeBorrowStatus = request()->routeIs('borrow.user.index') || request()->routeIs('admin.borrow.*');
         $activeHistory = request()->routeIs('borrow.history');
         $activeSupport = request()->routeIs('support.*');
+        $activeProfile = request()->routeIs('profile');
         $borrowNotificationCount = $borrowNotificationCount ?? 0;
         $borrowNotifications = $borrowNotifications ?? collect();
         $supportUnreadCount = $supportUnreadCount ?? 0;
@@ -470,9 +530,44 @@
                 </div>
             </header>
 
-            <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8">
+            <main class="px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-28 lg:pb-8">
                 @yield('content')
             </main>
+
+            <nav class="mobile-nav-shell lg:hidden" aria-label="Navigasi Mobile">
+                <div class="grid grid-cols-4 items-center gap-1 rounded-3xl border border-slate-200/90 bg-white/95 p-2 shadow-2xl shadow-slate-900/10 backdrop-blur-md">
+                    <a href="{{ route('dashboard') }}" class="mobile-nav-link flex flex-col items-center justify-center gap-1 rounded-2xl px-2 text-[11px] font-semibold transition {{ $activeDashboard ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-100' }}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                        </svg>
+                        <span>Home</span>
+                    </a>
+
+                    <a href="{{ $isAdmin ? route('admin.books.index') : route('user.books') }}" class="mobile-nav-link flex flex-col items-center justify-center gap-1 rounded-2xl px-2 text-[11px] font-semibold transition {{ ($isAdmin ? $activeBooks : $activeUserBooks) ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-100' }}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                        <span>Buku</span>
+                    </a>
+
+                    <a href="{{ $isAdmin ? route('admin.borrow.index') : route('borrow.user.index') }}" class="mobile-nav-link relative flex flex-col items-center justify-center gap-1 rounded-2xl px-2 text-[11px] font-semibold transition {{ $activeBorrowStatus ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-100' }}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <span>Status</span>
+                        @if ($borrowNotificationCount > 0)
+                            <span class="absolute right-3 top-2 inline-flex h-2.5 w-2.5 rounded-full bg-rose-500 ring-2 ring-white"></span>
+                        @endif
+                    </a>
+
+                    <a href="{{ route('profile') }}" class="mobile-nav-link flex flex-col items-center justify-center gap-1 rounded-2xl px-2 text-[11px] font-semibold transition {{ $activeProfile ? 'bg-blue-600 text-white shadow-lg shadow-blue-200' : 'text-slate-600 hover:bg-slate-100' }}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span>Profil</span>
+                    </a>
+                </div>
+            </nav>
         </div>
     </div>
 
@@ -485,6 +580,29 @@
         const notifDropdown = document.getElementById('notifDropdown');
         const profileBtn = document.getElementById('profileBtn');
         const dropdown = document.getElementById('profileDropdown');
+
+        function refreshDeviceProfileClass() {
+            const ua = navigator.userAgent || '';
+            const isAndroid = /Android/i.test(ua);
+            const isIos = /(iPhone|iPad|iPod)/i.test(ua);
+            const isMobileUa = /(Mobi|Mobile|Android|iPhone|iPad|iPod|Opera Mini|IEMobile)/i.test(ua);
+            const isTouchDevice = (navigator.maxTouchPoints || 0) > 0 || 'ontouchstart' in window;
+            const minViewportSide = Math.min(window.innerWidth || 0, window.innerHeight || 0);
+            const isCompactViewport = minViewportSide > 0 && minViewportSide <= 1024;
+            const isMobile = isMobileUa || (isTouchDevice && isCompactViewport);
+
+            const root = document.documentElement;
+            root.classList.toggle('device-mobile-active', isMobile);
+            root.classList.toggle('device-desktop-active', !isMobile);
+            root.classList.toggle('device-android-active', isAndroid);
+            root.classList.toggle('device-ios-active', isIos);
+            root.setAttribute('data-device-mobile', isMobile ? '1' : '0');
+            root.setAttribute('data-device-platform', isAndroid ? 'android' : (isIos ? 'ios' : 'desktop'));
+        }
+
+        refreshDeviceProfileClass();
+        window.addEventListener('resize', refreshDeviceProfileClass, { passive: true });
+        window.addEventListener('orientationchange', refreshDeviceProfileClass);
 
         function applyTheme(mode) {
             const isDark = mode === 'dark';
